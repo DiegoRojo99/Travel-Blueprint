@@ -14,9 +14,17 @@ export const useAuth = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return true;
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } 
+    catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } 
+      else {
+        console.error("An unknown error occurred");
+      }
+      return false;
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -28,10 +36,16 @@ export const useAuth = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       return true;
-    } catch (err: any) {
-      setError(err.message);
+    } 
+    catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } 
+      else {
+        console.error("An unknown error occurred");
+      }
       return false;
-    } finally {
+    }finally {
       setLoading(false);
     }
   };
