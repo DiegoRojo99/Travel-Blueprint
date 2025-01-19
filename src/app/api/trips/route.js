@@ -1,4 +1,4 @@
-import { getTrips, addTrip } from '../../../utils/firestore'; // Import firestore functions
+import { getTrips, addTrip } from '../../../utils/firestore';
 
 // Fetch trips from Firestore
 export async function GET() {
