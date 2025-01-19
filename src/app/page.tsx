@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link  from "next/link";
 
 export default function Home() {
   return (
@@ -22,6 +23,12 @@ export default function Home() {
           height={200}
           priority
         />
+
+        <Link href="/trips" className="block py-2 px-3 rounded hover:bg-gray-800">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" >
+            Start Planning
+          </button>
+        </Link>
       </main>
 
       {/* Footer */}
