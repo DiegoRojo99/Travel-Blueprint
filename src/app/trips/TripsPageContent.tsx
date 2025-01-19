@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Trip {
   id: number;
@@ -29,15 +29,33 @@ const TripsPage = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleCreateTrip = (e: React.FormEvent<HTMLFormElement>)  => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)  => {
     e.preventDefault();
-    const newTrip = {
-      id: Date.now(), // Temporary ID, replace with backend-generated ID
-      ...form,
-    };
-    setTrips([...trips, newTrip]);
-    setForm({ name: "", startDate: "", endDate: "", destination: "" });
+
+    const response = await fetch('/api/trips', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(form),
+    });
+
+    if (response.ok) {
+      alert('Trip created successfully!');
+    } else {
+      alert('Error creating trip.');
+    }
   };
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      const response = await fetch('/api/trips');
+      const data = await response.json();
+      setTrips(data);
+    };
+
+    fetchTrips();
+  }, []);
 
   return (
     <div className="p-6 dark:bg-gray-900 ">
@@ -46,7 +64,7 @@ const TripsPage = () => {
 
         {/* Trip Form */}
         <form
-          onSubmit={handleCreateTrip}
+          onSubmit={handleSubmit}
           className="bg-white p-4 shadow-md rounded mb-6 max-w-lg w-full"
         >
           <h2 className="text-lg font-semibold mb-4 text-black">Create a New Trip</h2>
