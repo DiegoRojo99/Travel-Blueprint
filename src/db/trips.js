@@ -30,6 +30,7 @@ export const addTrip = async (tripData, userId) => {
     console.error('Error adding document: ', e);
   }
 };
+
 export const getTripById = async (id) => {
   const tripRef = doc(db, 'Trips', id);
   const tripSnapshot = await getDoc(tripRef);

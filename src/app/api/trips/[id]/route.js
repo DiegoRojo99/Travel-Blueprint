@@ -35,8 +35,7 @@ export async function PUT(req, { params }) {
     if (!updatedTrip) {
       return new Response('Not Found: Trip not found', { status: 404 });
     }
-
-    return new Response('Trip updated successfully', { status: 200 });
+    return new Response(JSON.stringify(updatedTrip), { status: 200 });
   } catch (error) {
     console.error('Error updating trip', error);
     return new Response('Error updating trip', { status: 500 });

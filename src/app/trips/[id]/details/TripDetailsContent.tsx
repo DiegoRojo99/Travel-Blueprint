@@ -34,12 +34,35 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   }, [id, router]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
-
   const handleSaveChanges = async () => {
-    // Save the changes here (e.g., API call)
-    console.log('Save changes');
-    setIsEditing(false);
-  };
+    try {
+      const updatedTrip = {
+        name: trip?.name,
+        startDate,
+        endDate,
+        destination: trip?.destination,
+      };
+  
+      const response = await fetch(`/api/trips/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedTrip),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update the trip');
+      }
+  
+      const updatedData = await response.json();
+      setTrip(updatedData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating trip:', error);
+      alert('Failed to update the trip. Please try again.');
+    }
+  };  
 
   const handleDateChange = (dateType: 'start' | 'end', date: string) => {
     if (dateType === 'start') {
