@@ -32,9 +32,7 @@ const TripsPage = () => {
     setTripForm({ ...tripForm, [name]: value });
   };
 
-  interface SubmitEvent extends React.FormEvent<HTMLFormElement> {}
-
-  const handleSubmit = async (e: SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const user = auth.currentUser;
 
@@ -75,7 +73,7 @@ const TripsPage = () => {
     };
 
     fetchTrips();
-  }, []);
+  }, [auth.currentUser]);
 
   return (
     <div className="p-6 dark:bg-gray-900 ">
