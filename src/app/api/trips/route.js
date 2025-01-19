@@ -6,7 +6,7 @@ export async function GET() {
     const trips = await getTrips();
     return new Response(JSON.stringify(trips), { status: 200 });
   } catch (error) {
-    return new Response('Error fetching trips', { status: 500 });
+    return new Response('Error fetching trips', { status: 500, error });
   }
 }
 
@@ -18,6 +18,6 @@ export async function POST(req) {
     await addTrip(tripData);
     return new Response('Trip added successfully', { status: 201 });
   } catch (error) {
-    return new Response('Error adding trip', { status: 500 });
+    return new Response('Error adding trip', { status: 500, error });
   }
 }
