@@ -1,26 +1,12 @@
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import TripCard from "./TripSmallCard";
-
-interface Trip {
-  id: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  destination: string;
-}
-
-interface FormState {
-  name: string;
-  startDate: string;
-  endDate: string;
-  destination: string;
-}
+import { Trip, TripFormState } from "@/types/trip";
 
 const TripsPage = () => {
   const auth = getAuth();
   const [trips, setTrips] = useState<Trip[]>([]);
-  const [tripForm, setTripForm] = useState<FormState>({
+  const [tripForm, setTripForm] = useState<TripFormState>({
     name: "",
     startDate: "",
     endDate: "",

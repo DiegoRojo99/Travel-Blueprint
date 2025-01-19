@@ -1,11 +1,4 @@
-
-interface Trip {
-  id: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  destination: string;
-}
+import { Trip } from "@/types/trip";
 
 const TripSmallCard = ({ trip }: { trip: Trip }) => (
   <div
