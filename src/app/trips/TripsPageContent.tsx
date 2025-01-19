@@ -1,4 +1,6 @@
+import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
+import TripCard from "./TripSmallCard";
 
 interface Trip {
   id: number;
@@ -16,8 +18,9 @@ interface FormState {
 }
 
 const TripsPage = () => {
+  const auth = getAuth();
   const [trips, setTrips] = useState<Trip[]>([]);
-  const [form, setForm] = useState<FormState>({
+  const [tripForm, setTripForm] = useState<FormState>({
     name: "",
     startDate: "",
     endDate: "",
@@ -26,32 +29,49 @@ const TripsPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setTripForm({ ...tripForm, [name]: value });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)  => {
+  interface SubmitEvent extends React.FormEvent<HTMLFormElement> {}
+
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
+    const user = auth.currentUser;
 
-    const response = await fetch('/api/trips', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(form),
-    });
+    if (user) {
+      console.log(tripForm);
+      console.log("user", user);
+      console.log("user uid", user.uid);
+      const response = await fetch('/api/trips', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user.uid,
+        },
+        body: JSON.stringify(tripForm),
+      });
 
-    if (response.ok) {
-      alert('Trip created successfully!');
+      if (response.ok) {
+        alert('Trip created successfully!');
+      } else {
+        alert('Error creating trip.');
+      }
     } else {
-      alert('Error creating trip.');
+      alert('You must be logged in to create a trip.');
     }
   };
 
   useEffect(() => {
     const fetchTrips = async () => {
-      const response = await fetch('/api/trips');
-      const data = await response.json();
-      setTrips(data);
+      const user = auth.currentUser;
+
+      if (user) {
+        const response = await fetch('/api/trips', {
+          headers: { 'x-user-id': user.uid },
+        });
+        const data = await response.json();
+        setTrips(data);
+      }
     };
 
     fetchTrips();
@@ -79,7 +99,7 @@ const TripsPage = () => {
               type="text"
               id="name"
               name="name"
-              value={form.name}
+              value={tripForm.name}
               onChange={handleInputChange}
               className="w-full border rounded px-3 py-2 text-black"
               required
@@ -96,7 +116,7 @@ const TripsPage = () => {
               type="date"
               id="startDate"
               name="startDate"
-              value={form.startDate}
+              value={tripForm.startDate}
               onChange={handleInputChange}
               className="w-full border rounded px-3 py-2 text-black"
               required
@@ -113,7 +133,7 @@ const TripsPage = () => {
               type="date"
               id="endDate"
               name="endDate"
-              value={form.endDate}
+              value={tripForm.endDate}
               onChange={handleInputChange}
               className="w-full border rounded px-3 py-2 text-black"
               required
@@ -130,7 +150,7 @@ const TripsPage = () => {
               type="text"
               id="destination"
               name="destination"
-              value={form.destination}
+              value={tripForm.destination}
               onChange={handleInputChange}
               className="w-full border rounded px-3 py-2 text-black"
               required
@@ -144,26 +164,17 @@ const TripsPage = () => {
           </button>
         </form>
 
-        {/* Trips List */}
+        {/* Trips Grid */}
         <div className="container mx-auto">
           <h2 className="text-lg font-semibold mb-4">Your Trips</h2>
           {trips.length === 0 ? (
             <p className="text-gray-600">No trips yet. Start planning!</p>
           ) : (
-            <ul className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {trips.map((trip) => (
-                <li
-                  key={trip.id}
-                  className="bg-gray-100 p-4 rounded shadow-md flex flex-col gap-2"
-                >
-                  <span className="font-semibold">{trip.name}</span>
-                  <span>
-                    {trip.startDate} - {trip.endDate}
-                  </span>
-                  <span>{trip.destination}</span>
-                </li>
+                <TripCard key={trip.id} trip={trip} />                
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>
