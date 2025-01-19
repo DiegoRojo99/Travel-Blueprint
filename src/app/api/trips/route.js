@@ -1,4 +1,4 @@
-import { getUserTrips, addTrip } from '../../../utils/firestore';
+import { addTrip, getUserTrips } from "../../../db/trips";
 
 export async function GET(req) {
   const userId = req.headers.get('x-user-id');
