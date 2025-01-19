@@ -23,9 +23,6 @@ const TripsPage = () => {
     const user = auth.currentUser;
 
     if (user) {
-      console.log(tripForm);
-      console.log("user", user);
-      console.log("user uid", user.uid);
       const response = await fetch('/api/trips', {
         method: 'POST',
         headers: {
