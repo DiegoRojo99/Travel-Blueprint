@@ -8,7 +8,6 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const { id } = use(params);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const router = useRouter();
