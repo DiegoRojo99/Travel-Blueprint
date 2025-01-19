@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌐 Travel Blueprint
 
-## Getting Started
+Travel Blueprint is a modern web application designed to simplify your trip planning process. From managing your travel dates to organizing destinations, it's your personal tool for creating memorable journeys.  
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Current Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **User Authentication**:  
+  Secure sign-up and login functionality powered by Firebase Authentication.  
+- **Create and Manage Trips**:  
+  Add trips with a name, start and end dates, and destination details.  
+- **Update Trips**:  
+  Edit existing trips to adjust travel plans seamlessly.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack  
 
-## Learn More
+### Frameworks & Libraries
+- **Next.js**: A React framework for server-side rendering and optimized web performance.  
+- **Firebase Authentication**: Secure user management and authentication.  
+- **Firestore Database**: NoSQL database for storing and updating trip details.  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📜 Planned Features  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Short-Term Goals
+- **Itinerary Builder**:  
+  Add day-to-day activities and plans for each trip.  
+- **Destination Search**:  
+  Enable destination search with suggestions powered by an external API.  
 
-## Deploy on Vercel
+### Long-Term Goals
+- **Real-Time Flight Prices**:  
+  Integrate live flight price data for destinations.  
+- **User Preferences**:  
+  Save user travel interests and favorite destinations for a personalized experience.  
+- **Collaborative Planning**:  
+  Allow users to share trips and itineraries with friends and family.  
+- **Weather Updates**:  
+  Show real-time weather conditions for destinations.  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🌍 Vision Statement  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Travel Blueprint** aims to become the go-to tool for travelers, helping them organize, plan, and optimize their trips with ease, convenience, and modern technology.
