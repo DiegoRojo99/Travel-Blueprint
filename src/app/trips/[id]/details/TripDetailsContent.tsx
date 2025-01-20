@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import StopsSection from './StopSection';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -78,7 +79,6 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800"
       // style={{ backgroundImage: `url('/path/to/your/image.jpg')` }}
     >
-      <div className="absolute inset-0 bg-black opacity-40"></div>
       <div className="relative z-2 text-black bg-white p-2 sm:p-6 m-2 sm:m-6 rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -150,6 +150,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           )}
         </>
       </div>
+      <StopsSection trip={trip} />
     </div>
   );
 };
