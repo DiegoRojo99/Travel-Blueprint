@@ -1,3 +1,16 @@
+interface Location {
+  lat: number;
+  lng: number;
+}
+
+interface Stop {
+  id: string;
+  name: string;
+  date: string;
+  type: string;
+  location: Location | undefined;
+  notes: string;
+}
 
 interface Trip {
   id: string;
@@ -5,6 +18,7 @@ interface Trip {
   startDate: string;
   endDate: string;
   destination: string;
+  stops: Stop[] | undefined;
 }
 
 interface TripFormState {
@@ -15,6 +29,7 @@ interface TripFormState {
 }
 
 export {
+  Stop,
   Trip,
   TripFormState
 };
