@@ -26,7 +26,22 @@ export async function GET(req, context) {
 export async function POST(req, context) {
   const { params } = context;
   const { id } = await params;
-  const stopData = await req.json();
+
+  let stopData;
+  try {
+    const body = await req.text();
+    if (!body) {
+      return new Response('Bad Request: Empty body', { status: 400 });
+    }
+    stopData = JSON.parse(body);
+    if (!stopData) {
+      throw new Error('Invalid JSON');
+    }
+  } catch (error) {
+    // Handle JSON parsing errors
+    console.error('Error parsing JSON', error);
+    return new Response('Bad Request: Invalid JSON', { status: 400 });
+  }
 
   if (!id || !stopData.name || !stopData.type || !stopData.date) {
     return new Response('Bad Request: Missing required fields', { status: 400 });
@@ -45,7 +60,11 @@ export async function POST(req, context) {
 
     trip.stops = trip.stops || [];
     trip.stops.push(newStop);
-    await updateTripStops(id, trip.stops);
+
+    let updateResult = await updateTripStops(id, trip.stops);
+    if (!updateResult) {
+      return new Response('Error adding stop', { status: 500 });
+    }
 
     return new Response(JSON.stringify(newStop), { status: 201 });
   } catch (error) {
@@ -54,9 +73,8 @@ export async function POST(req, context) {
   }
 }
 
-export async function PUT(req, context) {
-  const { params } = context;
-  const { id } = await params;
+export async function PUT(req, { params }) {
+  const { id, stopId } = params;
   const stopData = await req.json();
 
   if (!id || !stopId) {
@@ -84,9 +102,8 @@ export async function PUT(req, context) {
   }
 }
 
-export async function DELETE(req, context) {
-  const { params } = context;
-  const { id, stopId } = await params;
+export async function DELETE(req, { params }) {
+  const { id, stopId } = params;
 
   if (!id || !stopId) {
     return new Response('Bad Request: Missing required IDs', { status: 400 });
