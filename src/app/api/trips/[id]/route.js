@@ -1,7 +1,8 @@
 import { getTripById, updateTrip, deleteTrip } from "@/db/trips";
 
-export async function GET(req, { params }) {
-  const { id } = params; 
+export async function GET(req, context) {
+  const { params } = context;
+  const { id } = await params;
 
   if (!id) {
     return new Response('Bad Request: Missing trip ID', { status: 400 });
@@ -21,8 +22,9 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
-  const { id } = params;
+export async function PUT(req, context) {
+  const { params } = context;
+  const { id } = await params;
   const tripData = await req.json();
 
   if (!id) {
@@ -42,8 +44,9 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) { 
-  const { id } = params;
+export async function DELETE(req, context) { 
+  const { params } = context;
+  const { id } = await params;
 
   if (!id) {
     return new Response('Bad Request: Missing trip ID', { status: 400 });
