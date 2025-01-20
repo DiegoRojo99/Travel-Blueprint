@@ -1,5 +1,4 @@
 import { use, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +10,6 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const [isEditing, setIsEditing] = useState(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const router = useRouter();
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -24,14 +22,14 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         setTrip(data);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Error fetching trip:', error);
-        router.push('/trips');
       }
     };
 
     fetchTrip();
-  }, [id, router]);
+  }, [id]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
   const handleSaveChanges = async () => {
