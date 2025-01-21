@@ -2,11 +2,30 @@ import { Trip, Stop } from "@/types/trip";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar, faChevronDown, faChevronUp, faUtensils, faLandmark  } from "@fortawesome/free-solid-svg-icons";
 import { eachDayOfInterval } from "date-fns/fp";
+import { faCalendar, faChevronDown, faChevronUp, faUtensils, faMonument, faTree, faQuestion, faMuseum } from "@fortawesome/free-solid-svg-icons";
+import { faFortAwesome } from "@fortawesome/free-brands-svg-icons";
+
+const getIconForStopType = (type: string) => {
+  switch (type.toLowerCase()) {
+    case "restaurant":
+      return faUtensils;
+    case "museum":
+      return faMuseum;
+    case "park":
+      return faTree;
+    case "landmark":
+      return faMonument;
+    case "theme park":
+      return faFortAwesome;
+    default:
+      return faQuestion;
+  }
+  // 🎢
+};
 
 const StopItem = ({ stop }: { stop: Stop }) => {
-  const icon = stop.type.toLocaleLowerCase() === "restaurant" ? faUtensils : faLandmark;
+  const icon = getIconForStopType(stop.type);
   return (
     <div className="p-2 border rounded flex items-center w-auto m-1">
       <FontAwesomeIcon icon={icon} className="text-gray-500 fa-xl ml-2 mr-4"/>
