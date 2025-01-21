@@ -1,9 +1,10 @@
 import { use, useEffect, useState } from 'react';
-import { Trip } from '@/types/trip';
+import { Stop, Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import AddStopForm from './AddStopForm';
-import Itinerary from './Itinerary';
+import Itinerary from '@/components/itinerary/Itinerary';
+import StopSearch from '@/components/stops/StopSearch';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -149,6 +150,9 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           )}
         </>
       </div>
+      <StopSearch 
+        onStopAdded={(newStop: Stop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
+      />
       <AddStopForm 
         trip={trip} 
         onStopAdded={(newStop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
