@@ -1,11 +1,15 @@
 interface GoogleSearchResult {
-  id: string;
+  place_id: string;
   name: string;
-  address: string;
+  formatted_address: string;
   location: {
     lat: number;
     lng: number;
   };
+  rating?: number;
+  user_ratings_total?: number;
+  types?: string[];
+  photo_reference?: string;
 };
 
 interface GooglePlaceDetails {

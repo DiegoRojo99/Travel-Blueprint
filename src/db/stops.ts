@@ -34,21 +34,22 @@ export async function searchGooglePlaces(query: string): Promise<GoogleSearchRes
   }
 
   const data = await response.json() as { results: any[] };
-  console.log("Data: ", data);
-  
   if (!data?.results) {
     console.error("No results found");
     throw new Error("No results found");
   };
 
-  console.log("Results: ", data.results);
   return data.results.map((result) => ({
-    id: result.place_id,
+    place_id: result.place_id,
     name: result.name,
-    address: result.formatted_address,
+    formatted_address: result.formatted_address,
     location: {
       lat: result.geometry.location.lat,
       lng: result.geometry.location.lng,
     },
+    rating: result.rating,
+    user_ratings_total: result.user_ratings_total,
+    types: result.types,
+    photo_reference: result.photos?.[0]?.photo_reference,
   }));
 }
