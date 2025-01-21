@@ -1,71 +1,79 @@
-import { GoogleSearchResult, StopSearchProps } from "@/types/search";
-import { Stop } from "@/types/trip";
-import { getAuth } from "firebase/auth";
-import React, { useState } from "react";
+import { GoogleSearchResult } from '@/types/search';
+import React, { useState } from 'react';
+import { StopSearchResultItem } from './StopSearchResultItem';
+import { getAuth } from 'firebase/auth';
 
-const StopSearch: React.FC<StopSearchProps> = ({ onStopAdded }) => {
-  const [query, setQuery] = useState<string>("");
+interface StopSearchProps {
+  onStopSelected: (selectedStop: GoogleSearchResult) => void;
+}
+
+export const StopSearch: React.FC<StopSearchProps> = ({ onStopSelected }) => {
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<GoogleSearchResult[]>([]);
-  const auth = getAuth();
+  const [loading, setLoading] = useState(false);
+    const auth = getAuth();
 
   const handleSearch = async () => {
+    if (!query.trim()) return;
+    const user = auth.currentUser;
+
+    if(!user){
+      alert('You must be logged in to search for a stop.');
+      return;
+    }
+    setLoading(true);
     try {
-      const user = auth.currentUser;
-      if (user) {
-
-        const res = await fetch(`/api/stops/search?query=${query}`, {
-          headers: { 'x-user-id': user.uid },
-        });
-        if (!res.ok) throw new Error("Failed to fetch search results");  
-
-        console.log("Response: ", res);
-        const data: GoogleSearchResult[] = await res.json();
-        console.log("Data: ", data);
-        setResults(data);
-      }
-      else {
-        alert("You must be logged in to search for stops.");
-      }
+      const response = await fetch(`/api/stops/search?query=${encodeURIComponent(query)}`,
+        { headers: { 'x-user-id': user.uid, } }
+      );
+      const data: GoogleSearchResult[] = await response.json();
+      setResults(data);
     } catch (error) {
-      console.error("Error fetching search results:", error);
-      setResults([]);
+      console.error('Error fetching places:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  function formatGoogleResult(result: GoogleSearchResult): Stop {
-    return {
-      name: result.name,
-      location: result.location,
-      type: "Landmark",
-      date: new Date().toISOString(),
-      notes: "",
-    };
-  }
-
+  const handleSelect = (stop: GoogleSearchResult) => {
+    onStopSelected(stop);
+    setQuery('');
+    setResults([]);
+  };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for stops..."
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div className="relative w-full max-w-lg mx-auto">
+      <div className="flex border border-gray-300 rounded-md shadow-sm">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for a stop..."
+          className="flex-1 px-4 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+        <button
+          onClick={handleSearch}
+          className="px-4 bg-blue-500 text-white font-medium rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          🔍
+        </button>
+      </div>
 
-      <ul>
-        {results.map((result) => (
-          <li key={result.id}>
-            <div>
-              <strong>{result.name}</strong>
-              <p>{result.address}</p>
-              <button onClick={() => onStopAdded(formatGoogleResult(result))}>Add Stop</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {loading && (
+        <div className="mt-2 text-center text-gray-500">Loading Results...</div>
+      )}
+
+      {results.length > 0 && (
+        <ul className="absolute top-full w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-80 overflow-y-auto">
+          {results.map((result) => (
+            <StopSearchResultItem
+              key={result.place_id}
+              result={result}
+              onSelect={handleSelect}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
-
-export default StopSearch;
