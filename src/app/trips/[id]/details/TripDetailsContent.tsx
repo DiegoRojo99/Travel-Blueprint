@@ -150,7 +150,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         </>
       </div>
       <AddStopForm 
-        tripId={trip.id} 
+        trip={trip} 
         onStopAdded={(newStop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
       />
       <Itinerary trip={trip} />

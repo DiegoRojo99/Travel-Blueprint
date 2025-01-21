@@ -1,7 +1,7 @@
-import { Stop } from "@/types/trip";
+import { Stop, Trip } from "@/types/trip";
 import { useState } from "react";
 
-const AddStopForm = ({ tripId, onStopAdded }: { tripId: string, onStopAdded: (stop: Stop) => void }) => {
+const AddStopForm = ({ trip, onStopAdded }: { trip: Trip, onStopAdded: (stop: Stop) => void }) => {
   const [newStop, setNewStop] = useState({
     name: "",
     type: "",
@@ -19,7 +19,7 @@ const AddStopForm = ({ tripId, onStopAdded }: { tripId: string, onStopAdded: (st
 
   const handleAddStop = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch(`/api/trips/${tripId}/stops`, {
+    const res = await fetch(`/api/trips/${trip.id}/stops`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newStop),
@@ -57,6 +57,8 @@ const AddStopForm = ({ tripId, onStopAdded }: { tripId: string, onStopAdded: (st
           name="date"
           value={newStop.date}
           onChange={handleInputChange}
+          min={trip.startDate}
+          max={trip.endDate}
         />
         <textarea
           className="border border-gray-300 p-2 rounded"
