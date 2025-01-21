@@ -1,25 +1,6 @@
 import { db } from '@/utils/firebase';
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 
-export async function addStopToTrip(tripId, stop) {
-  const trip = await getTripById(tripId);
-  if (!trip) {
-    throw new Error('Trip not found');
-  }
-
-  if (!trip.stops) {
-    await updateDoc(tripRef, { stops: [] });
-  }
-
-  const updatedStops = [...tripData.stops, stopData];
-  await updateDoc(tripRef, { stops: updatedStops });
-
-  if (!updateResult) {
-    throw new Error('Error adding stop');
-  }
-  return trip;
-}
-
 export async function updateTripStops(tripId, stops) {
   const tripRef = doc(db, 'Trips', tripId);
   

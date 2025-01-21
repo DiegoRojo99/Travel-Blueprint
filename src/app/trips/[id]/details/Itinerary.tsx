@@ -1,8 +1,9 @@
 import { Trip, Stop } from "@/types/trip";
 import { useEffect, useState } from "react";
-import { format, eachDayOfInterval } from "date-fns";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar, faChevronDown, faChevronUp, faUtensils, faLandmark  } from "@fortawesome/free-solid-svg-icons";
+import { eachDayOfInterval } from "date-fns/fp";
 
 const StopItem = ({ stop }: { stop: Stop }) => {
 
