@@ -1,5 +1,5 @@
 import { db } from '@/utils/firebase';
-import { updateDoc, doc } from 'firebase/firestore';
+import { updateDoc, doc, getDoc } from 'firebase/firestore';
 
 export async function addStopToTrip(tripId, stop) {
   const trip = await getTripById(tripId);
@@ -21,19 +21,18 @@ export async function addStopToTrip(tripId, stop) {
 }
 
 export async function updateTripStops(tripId, stops) {
-  const tripRef = doc(db, 'trips', tripId);
-  if (!tripRef) {
-    throw new Error('Trip not found');
-  }
-  console.log("Trip Ref found");
+  const tripRef = doc(db, 'Trips', tripId);
+  
+  try {
+    let tripDoc = await getDoc(tripRef);
+    if (!tripDoc.exists()) {
+      throw new Error("Trip not found");
+    }
 
-  const updateResult = await updateDoc(tripRef, {
-    stops: stops
-  });
-  if (!updateResult) {
-    console.error('Error updating stops');
-    throw new Error('Error updating stops');
+    await updateDoc(tripRef, { stops: stops });
+    return true;
+  } catch (error) {
+    console.error("Error adding stop", error);
+    throw error;
   }
-  console.log("Update Result", updateResult);
-  return updateResult;
 }
