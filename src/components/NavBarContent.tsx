@@ -46,6 +46,12 @@ const NavBarContent = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex lg:items-center lg:space-x-6">
+          <Link
+            href="/trips"
+            className="block py-2 px-3 rounded hover:bg-gray-800"
+          >
+            Trips
+          </Link>
           {user ? (
             <button
               onClick={handleLogout}
@@ -67,18 +73,24 @@ const NavBarContent = () => {
       {/* Dropdown Menu */}
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-800 lg:hidden">
-          <div className="container mx-auto flex flex-col space-y-4 p-4">
+          <div className="container mx-auto flex flex-col p-4 text-center">
+            <Link
+              href="/trips"
+              className="block py-2 px-3 rounded hover:bg-gray-700"
+            >
+              Trips
+            </Link>
             {user ? (
               <button
                 onClick={handleLogout}
-                className="block py-2 px-3 rounded bg-red-600 hover:bg-red-700"
+                className="block py-2 px-3 rounded hover:bg-red-700"
               >
                 Logout
               </button>
             ) : (
               <Link
                 href="/auth/login"
-                className="block py-2 px-3 rounded bg-gray-900 hover:bg-gray-700"
+                className="block py-2 px-3 rounded hover:bg-gray-700"
               >
                 Login
               </Link>
