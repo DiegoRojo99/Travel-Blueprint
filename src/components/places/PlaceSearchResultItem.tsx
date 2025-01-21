@@ -3,12 +3,12 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
-interface StopSearchResultItemProps {
+interface PlaceSearchResultItemProps {
   result: GoogleSearchResult;
   onSelect: (stop: GoogleSearchResult) => void;
 }
 
-export const StopSearchResultItem: React.FC<StopSearchResultItemProps> = ({
+export const PlaceSearchResultItem: React.FC<PlaceSearchResultItemProps> = ({
   result,
   onSelect,
 }) => {

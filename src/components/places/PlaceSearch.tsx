@@ -1,24 +1,26 @@
 import { GoogleSearchResult } from '@/types/search';
 import React, { useState } from 'react';
-import { StopSearchResultItem } from './StopSearchResultItem';
 import { getAuth } from 'firebase/auth';
+import { Trip } from '@/types/trip';
+import { PlaceSearchResultItem } from './PlaceSearchResultItem';
 
-interface StopSearchProps {
+interface PlaceSearchProps {
   onStopSelected: (selectedStop: GoogleSearchResult) => void;
+  trip: Trip;
 }
 
-export const StopSearch: React.FC<StopSearchProps> = ({ onStopSelected }) => {
+export const PlaceSearch: React.FC<PlaceSearchProps> = ({ onStopSelected, trip }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GoogleSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
-    const auth = getAuth();
+  const auth = getAuth();
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     const user = auth.currentUser;
 
     if(!user){
-      alert('You must be logged in to search for a stop.');
+      alert('You must be logged in to search for a place.');
       return;
     }
     setLoading(true);
@@ -35,10 +37,26 @@ export const StopSearch: React.FC<StopSearchProps> = ({ onStopSelected }) => {
     }
   };
 
-  const handleSelect = (stop: GoogleSearchResult) => {
-    onStopSelected(stop);
-    setQuery('');
-    setResults([]);
+  const handleSelect = async (place: GoogleSearchResult) => {
+    try {
+      const res = await fetch(`/api/trips/${trip.id}/places`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(place),
+      });
+
+      if (res.ok) {
+        const addedPlace = await res.json();
+        onStopSelected(addedPlace);
+        setQuery('');
+        setResults([]);
+      } 
+      else {
+        throw new Error("Failed to add stop");
+      }
+    } catch (error) {
+      console.error("Error adding stop:", error);
+    }
   };
 
   return (
@@ -48,7 +66,7 @@ export const StopSearch: React.FC<StopSearchProps> = ({ onStopSelected }) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for a stop..."
+          placeholder="Search for a place..."
           className="flex-1 px-4 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
         <button
@@ -66,7 +84,7 @@ export const StopSearch: React.FC<StopSearchProps> = ({ onStopSelected }) => {
       {results.length > 0 && (
         <ul className="absolute top-full w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-80 overflow-y-auto">
           {results.map((result) => (
-            <StopSearchResultItem
+            <PlaceSearchResultItem
               key={result.place_id}
               result={result}
               onSelect={handleSelect}

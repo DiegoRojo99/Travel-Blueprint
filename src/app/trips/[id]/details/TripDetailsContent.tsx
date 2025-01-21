@@ -1,11 +1,11 @@
 import { use, useEffect, useState } from 'react';
-import { Stop, Trip } from '@/types/trip';
+import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import AddStopForm from './AddStopForm';
 import Itinerary from '@/components/itinerary/Itinerary';
-import { StopSearch } from '@/components/stops/StopSearch';
 import { GoogleSearchResult } from '@/types/search';
+import PlaceSection from '@/components/places/PlaceSection';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -151,8 +151,9 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           )}
         </>
       </div>
-      <StopSearch 
-        onStopSelected={(newBookmark: GoogleSearchResult) => setTrip({ ...trip, bookmarks: [...(trip.bookmarks || []), newBookmark] })} 
+      <PlaceSection
+        trip={trip}
+        onStopSelected={(selectedStop: GoogleSearchResult) => setTrip({ ...trip, places: [...(trip.places || []), selectedStop] })}
       />
       <AddStopForm 
         trip={trip} 
