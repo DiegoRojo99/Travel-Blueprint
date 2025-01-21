@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import AddStopForm from './AddStopForm';
 import Itinerary from '@/components/itinerary/Itinerary';
-import StopSearch from '@/components/stops/StopSearch';
+import { StopSearch } from '@/components/stops/StopSearch';
+import { GoogleSearchResult } from '@/types/search';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -151,7 +152,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         </>
       </div>
       <StopSearch 
-        onStopAdded={(newStop: Stop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
+        onStopSelected={(newBookmark: GoogleSearchResult) => setTrip({ ...trip, bookmarks: [...(trip.bookmarks || []), newBookmark] })} 
       />
       <AddStopForm 
         trip={trip} 

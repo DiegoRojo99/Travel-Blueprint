@@ -1,3 +1,5 @@
+import { GoogleSearchResult } from "./search";
+
 interface Location {
   lat: number;
   lng: number;
@@ -18,6 +20,7 @@ interface Trip {
   endDate: string;
   destination: string;
   stops: Stop[] | undefined;
+  bookmarks: GoogleSearchResult[] | undefined;
 }
 
 interface TripFormState {
