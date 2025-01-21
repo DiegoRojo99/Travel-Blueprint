@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { Stop, Trip } from "@/types/trip";
-import { useState } from "react";
 
 const AddStopForm = ({ trip, onStopAdded }: { trip: Trip, onStopAdded: (stop: Stop) => void }) => {
   const [newStop, setNewStop] = useState({
@@ -9,7 +9,9 @@ const AddStopForm = ({ trip, onStopAdded }: { trip: Trip, onStopAdded: (stop: St
     notes: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [error, setError] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setNewStop((prevStop) => ({
       ...prevStop,
@@ -19,16 +21,29 @@ const AddStopForm = ({ trip, onStopAdded }: { trip: Trip, onStopAdded: (stop: St
 
   const handleAddStop = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch(`/api/trips/${trip.id}/stops`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newStop),
-    });
+    if (!newStop.type) {
+      setError("Please select a type.");
+      return;
+    }
+    setError("");
 
-    if (res.ok) {
-      const addedStop = await res.json();
-      onStopAdded(addedStop);
-      setNewStop({ name: "", type: "", date: "", notes: "" });
+    try {
+      const res = await fetch(`/api/trips/${trip.id}/stops`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newStop),
+      });
+
+      if (res.ok) {
+        const addedStop = await res.json();
+        onStopAdded(addedStop);
+        setNewStop({ name: "", type: "", date: "", notes: "" });
+      } 
+      else {
+        throw new Error("Failed to add stop");
+      }
+    } catch (error) {
+      console.error("Error adding stop:", error);
     }
   };
 
@@ -43,14 +58,20 @@ const AddStopForm = ({ trip, onStopAdded }: { trip: Trip, onStopAdded: (stop: St
           value={newStop.name}
           onChange={handleInputChange}
         />
-        <input
+        <select
           className="border border-gray-300 p-2 rounded"
-          type="text"
           name="type"
-          placeholder="Type (e.g., Landmark, Restaurant)"
           value={newStop.type}
           onChange={handleInputChange}
-        />
+        >
+          <option value="">Select Type</option>
+          <option value="Landmark">Landmark</option>
+          <option value="Restaurant">Restaurant</option>
+          <option value="Theme Park">Theme Park</option>
+          <option value="Museum">Museum</option>
+          <option value="Park">Park</option>
+        </select>
+        {error && <div className="text-red-500">{error}</div>}
         <input
           className="border border-gray-300 p-2 rounded"
           type="date"
