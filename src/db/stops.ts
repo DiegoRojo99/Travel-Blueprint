@@ -1,11 +1,12 @@
+import { Stop } from '@/types/trip';
 import { db } from '@/utils/firebase';
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 
-export async function updateTripStops(tripId, stops) {
+export async function updateTripStops(tripId: string, stops: Stop[]): Promise<boolean> {
   const tripRef = doc(db, 'Trips', tripId);
   
   try {
-    let tripDoc = await getDoc(tripRef);
+    const tripDoc = await getDoc(tripRef);
     if (!tripDoc.exists()) {
       throw new Error("Trip not found");
     }
