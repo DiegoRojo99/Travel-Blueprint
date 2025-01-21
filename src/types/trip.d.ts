@@ -13,6 +13,15 @@ interface Stop {
   notes: string;
 }
 
+interface TripDocument {
+  name: string;
+  startDate: string;
+  endDate: string;
+  destination: string;
+  stops: Stop[] | undefined;
+  places: GoogleSearchResult[] | undefined;
+}
+
 interface Trip {
   id: string;
   name: string;
@@ -32,6 +41,7 @@ interface TripFormState {
 
 export {
   Stop,
+  TripDocument,
   Trip,
   TripFormState
 };

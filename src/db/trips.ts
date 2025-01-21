@@ -1,4 +1,4 @@
-import { Trip } from '@/types/trip';
+import { Trip, TripDocument } from '@/types/trip';
 import { db } from '@/utils/firebase';
 import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
@@ -8,8 +8,8 @@ export const getUserTrips = async (userId: string): Promise<Trip[]> => {
   const querySnapshot = await getDocs(tripsQuery);
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
-    const trip = doc.data() as Trip;
-    trips.push(trip);
+    const trip = doc.data() as TripDocument;
+    trips.push({ id: doc.id, ...trip });
   });
   return trips;
 };
@@ -19,8 +19,8 @@ export const getTrips = async (): Promise<Trip[]> => {
   const querySnapshot = await getDocs(collection(db, 'Trips'));
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
-    const trip = doc.data() as Trip;
-    trips.push(trip);
+    const trip = doc.data() as TripDocument;
+    trips.push({ id: doc.id, ...trip });
   });
   return trips;
 };
@@ -35,13 +35,17 @@ export const addTrip = async (tripData: Trip, userId: string): Promise<void> => 
 };
 
 export const getTripById = async (id: string): Promise<Trip> => {
+  if(!id){
+    throw new Error("Trip ID not provided");
+  }
   const tripRef = doc(db, 'Trips', id);
   const tripSnapshot = await getDoc(tripRef);
 
   if (tripSnapshot.exists()) {
-    const data = tripSnapshot.data();
-    return data as Trip;
-  } else {
+    const data = tripSnapshot.data() as TripDocument;
+    return { id: id, ...data };
+  } 
+  else {
     throw new Error("Trip not found");
   }
 };
