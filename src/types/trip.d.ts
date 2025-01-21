@@ -20,7 +20,7 @@ interface Trip {
   endDate: string;
   destination: string;
   stops: Stop[] | undefined;
-  bookmarks: GoogleSearchResult[] | undefined;
+  places: GoogleSearchResult[] | undefined;
 }
 
 interface TripFormState {

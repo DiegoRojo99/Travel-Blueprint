@@ -1,4 +1,4 @@
-import { searchGooglePlaces } from "@/db/stops";
+import { searchGooglePlaces } from "@/db/places";
 
 export async function GET(req: Request): Promise<Response> {
   const userId = req.headers.get("x-user-id");
