@@ -1,14 +1,8 @@
 import { Trip } from "@/types/trip";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 const TripSmallCard = ({ trip }: { trip: Trip }) => (
   <Link href={`/trips/${trip.id}/details`}>
@@ -19,7 +13,7 @@ const TripSmallCard = ({ trip }: { trip: Trip }) => (
       <span className="font-semibold text-center">{trip.name}</span>
       <span className="mt-2">
         <FontAwesomeIcon icon={faCalendar} size="sm" className="text-gray-500 mr-1" />
-        {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+        {format(trip.startDate, 'MMM d')} - {format(trip.endDate, 'MMM d')}
       </span>
       <span>
         <FontAwesomeIcon icon={faMapPin} size="1x" className="text-gray-500 mr-1" />
