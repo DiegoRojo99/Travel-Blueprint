@@ -2,7 +2,8 @@ import { use, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import StopsSection from './StopSection';
+import AddStopForm from './AddStopForm';
+import Itinerary from './Itinerary';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -148,7 +149,11 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           )}
         </>
       </div>
-      <StopsSection trip={trip} />
+      <AddStopForm 
+        tripId={trip.id} 
+        onStopAdded={(newStop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
+      />
+      <Itinerary trip={trip} />
     </div>
   );
 };
