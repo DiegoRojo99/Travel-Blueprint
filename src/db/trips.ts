@@ -2,26 +2,13 @@ import { Trip } from '@/types/trip';
 import { db } from '@/utils/firebase';
 import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
 
-
-function TripDTO (data: any): Trip {
-  return {
-    id: data.id,
-    name: data.name,
-    startDate: data.startDate,
-    endDate: data.endDate,
-    destination: data.destination,
-    stops: data.stops,
-    places: data.places,
-  };
-}
-
 // Fetch trips from Firestore for a specific user
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
   const tripsQuery = query(collection(db, 'Trips'), where('userId', '==', userId));
   const querySnapshot = await getDocs(tripsQuery);
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
-    let trip = TripDTO(doc.data());
+    const trip = doc.data() as Trip;
     trips.push(trip);
   });
   return trips;
@@ -32,7 +19,7 @@ export const getTrips = async (): Promise<Trip[]> => {
   const querySnapshot = await getDocs(collection(db, 'Trips'));
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
-    let trip = TripDTO(doc.data());
+    const trip = doc.data() as Trip;
     trips.push(trip);
   });
   return trips;
@@ -53,7 +40,7 @@ export const getTripById = async (id: string): Promise<Trip> => {
 
   if (tripSnapshot.exists()) {
     const data = tripSnapshot.data();
-    return TripDTO(data);
+    return data as Trip;
   } else {
     throw new Error("Trip not found");
   }
