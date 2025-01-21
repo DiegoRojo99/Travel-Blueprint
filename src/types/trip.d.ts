@@ -4,7 +4,6 @@ interface Location {
 }
 
 interface Stop {
-  id: string;
   name: string;
   date: string;
   type: string;

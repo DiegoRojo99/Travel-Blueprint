@@ -6,16 +6,14 @@ import { faCalendar, faChevronDown, faChevronUp, faUtensils, faLandmark  } from 
 import { eachDayOfInterval } from "date-fns/fp";
 
 const StopItem = ({ stop }: { stop: Stop }) => {
-
   const icon = stop.type.toLocaleLowerCase() === "restaurant" ? faUtensils : faLandmark;
-
   return (
-    <div className="p-2 border rounded flex justify-between items-center">
+    <div className="p-2 border rounded flex items-center w-auto m-1">
+      <FontAwesomeIcon icon={icon} className="text-gray-500 fa-xl ml-2 mr-4"/>
       <div>
         <strong>{stop.name}</strong>
-        <p className="mt-2 text-gray-400">{stop.notes}</p>
+        <p className="mt-2 text-gray-400">{stop.notes?.length ? stop.notes : 'No notes'}</p>
       </div>
-      <FontAwesomeIcon icon={icon} className="text-gray-500 fa-xl mr-2"/>
     </div>
   );
 };
@@ -41,11 +39,11 @@ const ItineraryDay = ({ date, stops }: { date: string; stops: Stop[] }) => {
       {isCollapsed ? (
         <div className="text-sm text-gray-500">{stopNames}</div>
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-wrap">
           {stops
             .filter((stop) => stop.date === date)
-            .map((stop) => (
-              <StopItem key={stop.id} stop={stop} />
+            .map((stop, index) => (
+              <StopItem key={`itinerary-${date}-stop-${index}`} stop={stop} />
             ))}
         </div>
       )}
@@ -83,7 +81,7 @@ const Itinerary = ({ trip }: { trip: Trip }) => {
       </div>
       <div className="space-y-4 mb-6">
         {days.map((date) => {
-          return <ItineraryDay key={date} date={date} stops={filterStopsByDate(date)} />;
+          return <ItineraryDay key={`itinerary-${date}`} date={date} stops={filterStopsByDate(date)} />;
         })}
       </div>
     </div>
