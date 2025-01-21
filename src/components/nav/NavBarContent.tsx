@@ -1,10 +1,14 @@
-import { useState } from "react";
-import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import NavBarLink from './NavBarLink';
 
 const NavBarContent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -18,9 +22,9 @@ const NavBarContent = () => {
     <nav className="bg-black text-white px-4 py-3 relative">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold">
+        <NavBarLink href="/" onClick={closeMenu} className="text-xl font-bold">
           Travel Blueprint
-        </Link>
+        </NavBarLink>
 
         {/* Mobile Menu Button */}
         <button
@@ -46,12 +50,9 @@ const NavBarContent = () => {
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex lg:items-center lg:space-x-6">
-          <Link
-            href="/trips"
-            className="block py-2 px-3 rounded hover:bg-gray-800"
-          >
+          <NavBarLink href="/trips" onClick={closeMenu} className="hover:bg-gray-800">
             Trips
-          </Link>
+          </NavBarLink>
           {user ? (
             <button
               onClick={handleLogout}
@@ -60,12 +61,9 @@ const NavBarContent = () => {
               Logout
             </button>
           ) : (
-            <Link
-              href="/auth/login"
-              className="block py-2 px-3 rounded hover:bg-gray-800"
-            >
+            <NavBarLink href="/auth/login" onClick={closeMenu} className="hover:bg-gray-800">
               Login
-            </Link>
+            </NavBarLink>
           )}
         </div>
       </div>
@@ -74,12 +72,9 @@ const NavBarContent = () => {
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-gray-800 lg:hidden">
           <div className="container mx-auto flex flex-col p-4 text-center">
-            <Link
-              href="/trips"
-              className="block py-2 px-3 rounded hover:bg-gray-700"
-            >
+            <NavBarLink href="/trips" onClick={closeMenu} className="hover:bg-gray-700">
               Trips
-            </Link>
+            </NavBarLink>
             {user ? (
               <button
                 onClick={handleLogout}
@@ -88,12 +83,9 @@ const NavBarContent = () => {
                 Logout
               </button>
             ) : (
-              <Link
-                href="/auth/login"
-                className="block py-2 px-3 rounded hover:bg-gray-700"
-              >
+              <NavBarLink href="/auth/login" onClick={closeMenu} className="hover:bg-gray-700">
                 Login
-              </Link>
+              </NavBarLink>
             )}
           </div>
         </div>
