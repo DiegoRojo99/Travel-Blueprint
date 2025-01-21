@@ -1,5 +1,6 @@
 import React from 'react';
 import { GoogleSearchResult } from '@/types/search';
+import Image from 'next/image';
 
 interface PlaceItemProps {
   place: GoogleSearchResult;
@@ -20,10 +21,12 @@ const PlaceItem: React.FC<PlaceItemProps> = ({ place }) => {
         <div className="text-sm text-gray-600 mt-2">{ "No description available."}</div>
       </div>
       {place.photo_reference && (
-        <img
+        <Image
           src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photo_reference}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
           alt={place.name}
-          className="w-24 h-24 object-cover rounded-lg ml-4 mt-4 sm:mt-0"
+          width={100}
+          height={100}
+          className="object-cover rounded-lg ml-4 mt-4 sm:mt-0"
         />
       )}
     </div>
