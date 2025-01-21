@@ -43,10 +43,10 @@ export async function POST(req: Request, context: context): Promise<Response> {
       ...placeData,
     };
 
-    let places = trip.places || [];
+    const places = trip.places || [];
     places.push(newPlace);
 
-    let updateResult = await updateTripPlaces(id, places);
+    const updateResult = await updateTripPlaces(id, places);
     if (!updateResult) {
       return new Response('Error adding stop', { status: 500 });
     }
