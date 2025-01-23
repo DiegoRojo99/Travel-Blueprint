@@ -2,7 +2,6 @@ import { use, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import AddStopForm from './AddStopForm';
 import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
@@ -154,10 +153,6 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       <PlaceSection
         trip={trip}
         onStopSelected={(selectedStop: GoogleSearchResult) => setTrip({ ...trip, places: [...(trip.places || []), selectedStop] })}
-      />
-      <AddStopForm 
-        trip={trip} 
-        onStopAdded={(newStop) => setTrip({ ...trip, stops: [...(trip.stops || []), newStop] })} 
       />
       <Itinerary trip={trip} />
     </div>
