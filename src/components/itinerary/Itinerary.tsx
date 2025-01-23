@@ -14,7 +14,7 @@ const ItineraryDay = ({ date, stops }: { date: string; stops: StopWithDetails[] 
     setIsCollapsed(!isCollapsed);
   };
 
-  const stopNames = stops.map((stop) => stop.name).join(", ");
+  const stopNames = stops.length ? stops.map((stop) => stop.name).join(", ") : "No stops planned for this day";
 
   return (
     <div className="itinerary-day mb-4">
