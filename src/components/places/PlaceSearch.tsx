@@ -116,6 +116,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
 
       {isModalOpen && selectedPlace && (
         <PlaceModal
+          trip={trip}
           place={selectedPlace}
           onClose={() => setIsModalOpen(false)}
           onSave={handleModalSave}
