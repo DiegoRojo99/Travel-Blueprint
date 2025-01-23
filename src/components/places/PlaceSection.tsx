@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import PlaceBookmarks from './PlaceBookmarks';
 import { PlaceSearch } from './PlaceSearch';
-import { GoogleSearchResult } from '@/types/search';
+import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 interface PlaceSectionProps {
   trip: Trip
-  onStopSelected: (selectedStop: GoogleSearchResult) => void;
+  onPlaceAdded: (selectedPlace: GoogleSearchResult) => void;
+  onStopAdded: (selectedStop: StopWithDetails) => void;
 }
 
-const PlaceSection: React.FC<PlaceSectionProps> = ({ trip, onStopSelected }) => {
+const PlaceSection: React.FC<PlaceSectionProps> = ({ trip, onPlaceAdded, onStopAdded }) => {
   const [isOpen, setIsOpen] = useState(true);
+
+  function addSearchItem(item: GoogleSearchResult | StopWithDetails) {
+    if (!item) return;
+    if (typeof item === 'object' && 'date' in item) {
+      onStopAdded(item);
+    } 
+    else {
+      onPlaceAdded(item);
+    }
+  }
 
   if (!trip) return null;
 
@@ -32,7 +43,7 @@ const PlaceSection: React.FC<PlaceSectionProps> = ({ trip, onStopSelected }) => 
           <PlaceBookmarks trip={trip} />
           <PlaceSearch
             trip={trip}
-            onStopSelected={onStopSelected}
+            addSearchItem={addSearchItem}
           />
         </>
       )}

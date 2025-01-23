@@ -1,4 +1,4 @@
-import { GoogleSearchResult } from "./search";
+import { GoogleSearchResult, StopWithDetails } from "./search";
 
 interface Location {
   lat: number;
@@ -18,7 +18,7 @@ interface TripDocument {
   startDate: string;
   endDate: string;
   destination: string;
-  stops: Stop[] | undefined;
+  stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
 
@@ -28,7 +28,7 @@ interface Trip {
   startDate: string;
   endDate: string;
   destination: string;
-  stops: Stop[] | undefined;
+  stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
 

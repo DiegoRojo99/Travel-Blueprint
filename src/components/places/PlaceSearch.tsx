@@ -1,32 +1,36 @@
-import { GoogleSearchResult } from '@/types/search';
+import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { Trip } from '@/types/trip';
 import { PlaceSearchResultItem } from './PlaceSearchResultItem';
+import { PlaceModal } from './PlaceModal';
 
 interface PlaceSearchProps {
-  onStopSelected: (selectedStop: GoogleSearchResult) => void;
   trip: Trip;
+  addSearchItem: (addedItem: GoogleSearchResult | StopWithDetails) => void;
 }
 
-export const PlaceSearch: React.FC<PlaceSearchProps> = ({ onStopSelected, trip }) => {
+export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GoogleSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState<GoogleSearchResult | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const auth = getAuth();
 
   const handleSearch = async () => {
     if (!query.trim()) return;
     const user = auth.currentUser;
 
-    if(!user){
+    if (!user) {
       alert('You must be logged in to search for a place.');
       return;
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/stops/search?query=${encodeURIComponent(query)}`,
-        { headers: { 'x-user-id': user.uid, } }
+      const response = await fetch(
+        `/api/places/search?query=${encodeURIComponent(query)}`,
+        { headers: { 'x-user-id': user.uid } }
       );
       const data: GoogleSearchResult[] = await response.json();
       setResults(data);
@@ -37,25 +41,44 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ onStopSelected, trip }
     }
   };
 
-  const handleSelect = async (place: GoogleSearchResult) => {
+  const handleSelect = (place: GoogleSearchResult) => {
+    setSelectedPlace(place);
+    setIsModalOpen(true);
+  };
+
+  const handleModalSave = async (place: GoogleSearchResult, notes: string, date: string, isBookmarkOnly: boolean) => {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to save a place.");
+      return;
+    }
     try {
-      const res = await fetch(`/api/trips/${trip.id}/places`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(place),
+      const endpoint = isBookmarkOnly 
+        ? `/api/trips/${trip.id}/places`
+        : `/api/trips/${trip.id}/stops`;
+
+      const data = isBookmarkOnly ? place : { ...place, notes, date };
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
 
       if (res.ok) {
         const addedPlace = await res.json();
-        onStopSelected(addedPlace);
+        console.log('Added place:', addedPlace);
+        addSearchItem(data);
         setQuery('');
         setResults([]);
-      } 
-      else {
-        throw new Error("Failed to add stop");
+      } else {
+        throw new Error('Failed to save place');
       }
-    } catch (error) {
-      console.error("Error adding stop:", error);
+    } 
+    catch (error) {
+      console.error('Error saving place:', error);
+    } 
+    finally {
+      setIsModalOpen(false);
     }
   };
 
@@ -77,9 +100,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ onStopSelected, trip }
         </button>
       </div>
 
-      {loading && (
-        <div className="mt-2 text-center text-gray-500">Loading Results...</div>
-      )}
+      {loading && <div className="mt-2 text-center text-gray-500">Loading Results...</div>}
 
       {results.length > 0 && (
         <ul className="absolute top-full w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-80 overflow-y-auto">
@@ -91,6 +112,15 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ onStopSelected, trip }
             />
           ))}
         </ul>
+      )}
+
+      {isModalOpen && selectedPlace && (
+        <PlaceModal
+          trip={trip}
+          place={selectedPlace}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleModalSave}
+        />
       )}
     </div>
   );
