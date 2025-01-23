@@ -43,7 +43,7 @@ export async function POST(req, context) {
     return new Response('Bad Request: Invalid JSON', { status: 400 });
   }
 
-  if (!id || !stopData.name || !stopData.type || !stopData.date) {
+  if (!id || !stopData.date) {
     return new Response('Bad Request: Missing required fields', { status: 400 });
   }
 

@@ -56,8 +56,11 @@ interface PlaceSearchProps {
   onStopAdded: (newStop: Stop) => void;
 }
 
+type StopWithDetails = GoogleSearchResult & { date: string; notes: string };
+
 export {
   GoogleSearchResult,
   GooglePlaceDetails,
-  PlaceSearchProps
+  PlaceSearchProps,
+  StopWithDetails
 }
