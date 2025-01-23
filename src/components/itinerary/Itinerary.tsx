@@ -5,17 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { eachDayOfInterval } from "date-fns/fp";
 import { faCalendar, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { StopWithDetails } from "@/types/search";
-
-const StopItem = ({ stop }: { stop: StopWithDetails }) => {
-  return (
-    <div className="p-2 border rounded flex items-center w-auto m-1">
-      <div>
-        <strong>{stop.name}</strong>
-        <p className="mt-2 text-gray-400">{stop.notes?.length ? stop.notes : 'No notes'}</p>
-      </div>
-    </div>
-  );
-};
+import PlaceItem from "../places/PlaceItem";
 
 const ItineraryDay = ({ date, stops }: { date: string; stops: StopWithDetails[] }) => {
   const [isCollapsed, setIsCollapsed] = useState(stops.length === 0);
@@ -38,11 +28,13 @@ const ItineraryDay = ({ date, stops }: { date: string; stops: StopWithDetails[] 
       {isCollapsed ? (
         <div className="text-sm text-gray-500">{stopNames}</div>
       ) : (
-        <div className="flex flex-wrap">
+        <div className="my-2 flex flex-wrap -mx-2">
           {stops
             .filter((stop) => stop.date === date)
-            .map((stop, index) => (
-              <StopItem key={`itinerary-${date}-stop-${index}`} stop={stop} />
+            .map((stop, index) => (              
+              <div key={`itinerary-${date}-stop-${index}`} className="w-full sm:w-1/2 px-2 mb-4">
+                <PlaceItem place={stop} />
+              </div>
             ))}
         </div>
       )}
