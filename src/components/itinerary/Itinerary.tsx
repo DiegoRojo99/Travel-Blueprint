@@ -1,4 +1,4 @@
-import { Trip, Stop } from "@/types/trip";
+import { Trip } from "@/types/trip";
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

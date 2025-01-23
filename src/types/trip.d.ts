@@ -18,7 +18,7 @@ interface TripDocument {
   startDate: string;
   endDate: string;
   destination: string;
-  stops: Stop[] | undefined;
+  stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
 

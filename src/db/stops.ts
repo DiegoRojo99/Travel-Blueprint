@@ -1,8 +1,8 @@
-import { Stop } from '@/types/trip';
+import { StopWithDetails } from '@/types/search';
 import { db } from '@/utils/firebase';
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 
-export async function updateTripStops(tripId: string, stops: Stop[]): Promise<boolean> {
+export async function updateTripStops(tripId: string, stops: StopWithDetails[]): Promise<boolean> {
   const tripRef = doc(db, 'Trips', tripId);
   
   try {

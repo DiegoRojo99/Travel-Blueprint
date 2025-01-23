@@ -52,15 +52,10 @@ interface GooglePlaceDetails {
   user_ratings_total: number;
 }
 
-interface PlaceSearchProps {
-  onStopAdded: (newStop: Stop) => void;
-}
-
 type StopWithDetails = GoogleSearchResult & { date: string; notes: string };
 
 export {
   GoogleSearchResult,
   GooglePlaceDetails,
-  PlaceSearchProps,
   StopWithDetails
 }
