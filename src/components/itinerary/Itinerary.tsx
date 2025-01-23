@@ -3,32 +3,12 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { eachDayOfInterval } from "date-fns/fp";
-import { faCalendar, faChevronDown, faChevronUp, faUtensils, faMonument, faTree, faQuestion, faMuseum } from "@fortawesome/free-solid-svg-icons";
-import { faFortAwesome } from "@fortawesome/free-brands-svg-icons";
+import { faCalendar, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { StopWithDetails } from "@/types/search";
 
-const getIconForStopType = (type: string) => {
-  switch (type.toLowerCase()) {
-    case "restaurant":
-      return faUtensils;
-    case "museum":
-      return faMuseum;
-    case "park":
-      return faTree;
-    case "landmark":
-      return faMonument;
-    case "theme park":
-      return faFortAwesome;
-    default:
-      return faQuestion;
-  }
-  // 🎢
-};
-
-const StopItem = ({ stop }: { stop: Stop }) => {
-  const icon = getIconForStopType(stop.type);
+const StopItem = ({ stop }: { stop: StopWithDetails }) => {
   return (
     <div className="p-2 border rounded flex items-center w-auto m-1">
-      <FontAwesomeIcon icon={icon} className="text-gray-500 fa-xl ml-2 mr-4"/>
       <div>
         <strong>{stop.name}</strong>
         <p className="mt-2 text-gray-400">{stop.notes?.length ? stop.notes : 'No notes'}</p>
@@ -37,7 +17,7 @@ const StopItem = ({ stop }: { stop: Stop }) => {
   );
 };
 
-const ItineraryDay = ({ date, stops }: { date: string; stops: Stop[] }) => {
+const ItineraryDay = ({ date, stops }: { date: string; stops: StopWithDetails[] }) => {
   const [isCollapsed, setIsCollapsed] = useState(stops.length === 0);
 
   const toggleCollapse = () => {
