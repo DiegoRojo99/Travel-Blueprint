@@ -3,7 +3,7 @@ import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import Itinerary from '@/components/itinerary/Itinerary';
-import { GoogleSearchResult } from '@/types/search';
+import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -152,7 +152,8 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       </div>
       <PlaceSection
         trip={trip}
-        onStopSelected={(selectedStop: GoogleSearchResult) => setTrip({ ...trip, places: [...(trip.places || []), selectedStop] })}
+        onPlaceAdded={(selectedPlace: GoogleSearchResult) => setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
+        onStopAdded={(selectedStop: StopWithDetails) => setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
       />
       <Itinerary trip={trip} />
     </div>

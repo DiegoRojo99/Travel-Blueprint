@@ -5,7 +5,7 @@ import React from 'react';
 
 interface PlaceSearchResultItemProps {
   result: GoogleSearchResult;
-  onSelect: (stop: GoogleSearchResult) => void;
+  onSelect: (place: GoogleSearchResult) => void;
 }
 
 export const PlaceSearchResultItem: React.FC<PlaceSearchResultItemProps> = ({
