@@ -65,8 +65,6 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
       });
 
       if (res.ok) {
-        const addedPlace = await res.json();
-        console.log('Added place:', addedPlace);
         addSearchItem(data);
         setQuery('');
         setResults([]);
