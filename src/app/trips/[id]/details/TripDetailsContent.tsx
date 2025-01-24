@@ -5,6 +5,7 @@ import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-so
 import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
+import Loader from '@/components/loaders/Loader';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -72,8 +73,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
     }
   };
 
-  if (!trip) return <p>Loading...</p>;
-
+  if (!trip) return <Loader />;
   return (
     <div
       className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800"

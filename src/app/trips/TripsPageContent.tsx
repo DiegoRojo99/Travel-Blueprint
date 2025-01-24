@@ -2,9 +2,11 @@ import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
 import TripCard from "./TripSmallCard";
 import { Trip, TripFormState } from "@/types/trip";
+import Loader from "@/components/loaders/Loader";
 
 const TripsPage = () => {
   const auth = getAuth();
+  const [loading, setLoading] = useState(true);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [tripForm, setTripForm] = useState<TripFormState>({
     name: "",
@@ -52,6 +54,7 @@ const TripsPage = () => {
         });
         const data = await response.json();
         setTrips(data);
+        setLoading(false);
       }
     };
 
@@ -148,14 +151,17 @@ const TripsPage = () => {
         {/* Trips Grid */}
         <div className="container mx-auto">
           <h2 className="text-lg font-semibold mb-4">Your Trips</h2>
-          {trips.length === 0 ? (
-            <p className="text-gray-600">No trips yet. Start planning!</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {trips.map((trip) => (
-                <TripCard key={trip.id} trip={trip} />                
-              ))}
-            </div>
+          {loading && <Loader />}
+          {!loading && (
+            !trips.length ? (
+              <p className="text-gray-600">No trips yet. Start planning!</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {trips.map((trip) => (
+                  <TripCard key={trip.id} trip={trip} />                
+                ))}
+              </div>
+            )
           )}
         </div>
       </div>
