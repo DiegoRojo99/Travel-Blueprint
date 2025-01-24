@@ -31,31 +31,6 @@ export default function Home() {
           </button>
         </Link>
       </main>
-
-      {/* Footer */}
-      <footer className="text-center text-sm mt-16">
-        <p>
-          © {new Date().getFullYear()} Travel Blueprint. Built with{" "}
-          <a
-            href="https://nextjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline"
-          >
-            Next.js
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://vercel.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline"
-          >
-            Vercel
-          </a>
-          .
-        </p>
-      </footer>
     </div>
   );
 }
