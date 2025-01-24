@@ -19,8 +19,9 @@ export default function Home() {
         <Image
           src="/travelling.svg"
           alt="Travel planning illustration"
-          width={300}
-          height={200}
+          className="h-auto"
+          width={488}
+          height={290}
           priority
         />
 
