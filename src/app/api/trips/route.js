@@ -25,8 +25,13 @@ export async function POST(req) {
   }
 
   try {
-    await addTrip(tripData, userId);
-    return new Response('Trip added successfully', { status: 201 });
+    const tripId = await addTrip(tripData, userId);
+    return new Response(JSON.stringify({ message: 'Trip added successfully', tripId }), {
+      status: 201,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.error('Error adding trip', error);
     return new Response('Error adding trip', { status: 500 });

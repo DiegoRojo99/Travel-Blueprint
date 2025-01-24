@@ -26,11 +26,13 @@ export const getTrips = async (): Promise<Trip[]> => {
 };
 
 // Add a new trip associated with a user
-export const addTrip = async (tripData: Trip, userId: string): Promise<void> => {
+export const addTrip = async (tripData: Trip, userId: string): Promise<string> => {
   try {
-    await addDoc(collection(db, 'Trips'), { ...tripData, userId });
+    const docRef = await addDoc(collection(db, 'Trips'), { ...tripData, userId });
+    return docRef.id;
   } catch (e) {
     console.error('Error adding document: ', e);
+    throw new Error('Error adding document');
   }
 };
 
