@@ -4,6 +4,7 @@ import Navbar from "@/components/nav/NavBar";
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import "./globals.css";
+import FooterContent from "@/components/footer/FooterContent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <div className="dark:bg-gray-900 flex-grow">
           {children}
         </div>
+        <FooterContent />
       </body>
     </html>
   );
