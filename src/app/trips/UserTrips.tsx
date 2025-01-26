@@ -5,12 +5,31 @@ import { Trip } from "@/types/trip";
 import Loader from "@/components/loaders/Loader";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const UserTrips = () => {
   const auth = getAuth();
   const [loading, setLoading] = useState(true);
   const [trips, setTrips] = useState<Trip[]>([]);
+
+  const deleteTrip = async (tripId: string) => {
+    const user = auth.currentUser;
+    if (user) {
+      const response = await fetch(`/api/trips/${tripId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-user-id': user.uid,
+        },
+      });
+
+      if (response.ok) {
+        setTrips((prevTrips) => prevTrips.filter((trip) => trip.id !== tripId));
+      } 
+      else {
+        console.error("Failed to delete the trip");
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -44,7 +63,15 @@ const UserTrips = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {trips.map((trip) => (
-              <TripCard key={trip.id} trip={trip} />                
+              <div key={trip.id} className="relative">
+                <TripCard trip={trip} />
+                <FontAwesomeIcon
+                  icon={faTrashAlt}
+                  size="lg"
+                  className="text-red-500 cursor-pointer absolute top-2 right-2"
+                  onClick={() => deleteTrip(trip.id)}
+                />
+              </div>
             ))}
           </div>
         )
