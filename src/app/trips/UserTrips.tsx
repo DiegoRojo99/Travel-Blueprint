@@ -15,7 +15,7 @@ const UserTrips = () => {
   const deleteTrip = async (tripId: string) => {
     const user = auth.currentUser;
     if (user) {
-      let deleteCheck = confirm("Are you sure you want to delete this trip?");
+      const deleteCheck = confirm("Are you sure you want to delete this trip?");
       if(!deleteCheck) return;
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'DELETE',
