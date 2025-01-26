@@ -41,7 +41,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         name: trip?.name,
         startDate,
         endDate,
-        destination: trip?.destination,
+        destinations: trip?.destinations,
       };
   
       const response = await fetch(`/api/trips/${id}`, {
@@ -102,7 +102,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
 
         <div className="flex items-center space-x-2 mb-2">
           <FontAwesomeIcon icon={faMapPin} size="lg" />
-          <span>{trip.destination}</span>
+          <span>{trip.destinations?.join(', ')}</span>
         </div>
         
         <div className="flex justify-between">

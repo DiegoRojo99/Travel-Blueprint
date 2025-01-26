@@ -17,7 +17,7 @@ const TripSmallCard = ({ trip }: { trip: Trip }) => (
       </span>
       <span>
         <FontAwesomeIcon icon={faMapPin} size="1x" className="text-gray-500 mr-1" />
-        {trip.destination}
+        {trip.destinations?.join(', ')}
       </span>
     </div>
   </Link>

@@ -17,7 +17,7 @@ interface TripDocument {
   name: string;
   startDate: string;
   endDate: string;
-  destination: string;
+  destinations: string[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
@@ -27,7 +27,7 @@ interface Trip {
   name: string;
   startDate: string;
   endDate: string;
-  destination: string;
+  destinations: string[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
@@ -36,7 +36,7 @@ interface TripFormState {
   name: string;
   startDate: string;
   endDate: string;
-  destination: string;
+  destinations: string[];
 }
 
 export {
