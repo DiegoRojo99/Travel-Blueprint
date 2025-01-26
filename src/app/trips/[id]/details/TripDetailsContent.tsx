@@ -77,7 +77,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   if (!trip) return <Loader />;
   return (
     <div
-      className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800"
+      className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800 h-full"
       // style={{ backgroundImage: `url('/path/to/your/image.jpg')` }}
     >
       <div className="relative z-2 text-black bg-white p-2 sm:p-6 m-2 sm:m-6 rounded-lg">

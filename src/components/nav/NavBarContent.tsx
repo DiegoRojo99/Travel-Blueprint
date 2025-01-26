@@ -70,7 +70,7 @@ const NavBarContent = () => {
 
       {/* Dropdown Menu */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-gray-800 lg:hidden">
+        <div className="absolute top-full left-0 w-full bg-gray-600 lg:hidden z-10">
           <div className="container mx-auto flex flex-col p-4 text-center">
             <NavBarLink href="/trips" onClick={closeMenu} className="hover:bg-gray-700">
               Trips
