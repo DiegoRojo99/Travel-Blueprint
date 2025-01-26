@@ -36,3 +36,24 @@ export async function saveCityToFirestore(city: City): Promise<string> {
     throw new Error("Failed to save city to Firestore.");
   }
 }
+/**
+ * Save a city to the Cities collection in Firestore only if it doesn't already exist.
+ * @param {City[]} cities - The city object to save.
+ * @returns {Promise<string>} A message indicating the result of the operation.
+ */
+export async function saveCitiesToFirestore(cities: City[]): Promise<string> {
+  if(!cities.length){
+    return 'No cities';
+  }
+
+  try {
+    cities.forEach(async (city: City) => {
+      await saveCityToFirestore(city);
+    });
+    return 'Cities saved';
+  }
+  catch (error) {
+    console.error("Error saving cities to Firestore:", error);
+    return 'Error saving cities to Firestore';
+  }
+}
