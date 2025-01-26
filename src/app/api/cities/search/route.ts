@@ -20,14 +20,11 @@ export async function GET(req: Request) {
     if (data.status !== "OK") {
       return NextResponse.json({ error: `Google API error: ${data.status}` }, { status: 500 });
     }
-
     const cities: City[] = data.results.map((place: CityAPI) => ({
       id: place.place_id,
       name: place.name,
       location: place.geometry.location,
-      image: place.photos
-        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${GOOGLE_PLACES_API_KEY}`
-        : null,
+      image: place.photos?.[0]?.photo_reference ?? null,
     }));
 
     return NextResponse.json(cities, { status: 200 });

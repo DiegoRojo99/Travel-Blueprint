@@ -38,15 +38,13 @@ const PlaceSection: React.FC<PlaceSectionProps> = ({ trip, onPlaceAdded, onStopA
         </span>
         <h2 className="text-lg font-bold">Places to visit</h2>
       </div>
-      {isOpen && (
-        <>
-          <PlaceBookmarks trip={trip} />
-          <PlaceSearch
-            trip={trip}
-            addSearchItem={addSearchItem}
-          />
-        </>
-      )}
+      <>
+        {isOpen && <PlaceBookmarks trip={trip} />}
+        <PlaceSearch
+          trip={trip}
+          addSearchItem={addSearchItem}
+        />
+      </>
     </div>
   );
 };
