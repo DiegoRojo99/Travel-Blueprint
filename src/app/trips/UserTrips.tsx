@@ -15,6 +15,8 @@ const UserTrips = () => {
   const deleteTrip = async (tripId: string) => {
     const user = auth.currentUser;
     if (user) {
+      let deleteCheck = confirm("Are you sure you want to delete this trip?");
+      if(!deleteCheck) return;
       const response = await fetch(`/api/trips/${tripId}`, {
         method: 'DELETE',
         headers: {
@@ -68,7 +70,7 @@ const UserTrips = () => {
                 <FontAwesomeIcon
                   icon={faTrashAlt}
                   size="lg"
-                  className="text-red-500 cursor-pointer absolute top-2 right-2"
+                  className="text-red-500 cursor-pointer absolute top-4 right-4"
                   onClick={() => deleteTrip(trip.id)}
                 />
               </div>
