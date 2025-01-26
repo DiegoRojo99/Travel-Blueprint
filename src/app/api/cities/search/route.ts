@@ -1,3 +1,4 @@
+import { saveCityToFirestore } from '@/db/cities';
 import { City, CityAPI } from '@/types/cities';
 import { NextResponse } from 'next/server';
 
@@ -29,6 +30,8 @@ export async function GET(req: Request) {
         ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${GOOGLE_PLACES_API_KEY}`
         : null,
     }));
+
+    cities.forEach((city: City) => saveCityToFirestore(city))
 
     return NextResponse.json(cities, { status: 200 });
   } catch (error) {
