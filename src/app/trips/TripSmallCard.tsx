@@ -52,13 +52,6 @@ const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: R
             <FontAwesomeIcon icon={faTrashAlt} className="mr-4" />
             Delete
           </button>
-          {/* <button
-            onClick={handleShare}
-            className="flex items-center w-full py-1 px-2 text-left hover:bg-gray-100 rounded-md"
-          >
-            <FontAwesomeIcon icon={faShareAlt} className="mr-4" />
-            Share
-          </button> */}
         </div>
       )}
     </div>
