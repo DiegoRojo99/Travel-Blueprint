@@ -5,6 +5,7 @@ import { faCalendar, faMapPin, faEllipsisH, faTrashAlt } from "@fortawesome/free
 import Link from "next/link";
 import { City } from "@/types/cities";
 import { useState } from "react";
+import Image from "next/image";
 
 const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: React.MouseEvent) => void; }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -21,7 +22,14 @@ const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: R
     <div className="relative bg-gray-100 rounded shadow-md flex flex-col text-black transform transition-transform hover:-translate-y-2 hover:shadow-lg">
       <Link href={`/trips/${trip.id}/details`}>
         <div className="relative">
-          <img src={imageUrl} alt={trip.name} className="w-full h-40 object-cover rounded-md" />
+          <Image
+            src={`/api/photos?photoReference=${imageUrl}`}
+            width={100}
+            height={100}
+            alt={trip.name} 
+            className="w-full h-40 object-cover rounded-md" 
+            priority
+          />
           <button
             onClick={handleModalToggle}
             className="absolute top-2 right-2 bg-white rounded-full px-1 shadow-lg hover:bg-gray-200"
