@@ -84,10 +84,16 @@ export const updateTrip = async (id: string, updatedData: Trip): Promise<Trip> =
 /**
  * Delete a trip
  * @param {string} id - The id of the trip being deleted.
- * @returns {Promise<string>} A message showing the result of the operation.
+ * @returns {Promise<boolean>} A boolean indicating whether the deletion was successful.
  */
-export const deleteTrip = async (id: string): Promise<string> => {
-  const tripRef = doc(db, 'Trips', id);
-  await deleteDoc(tripRef);
-  return id;
+export const deleteTrip = async (id: string): Promise<boolean> => {
+  try {
+    const tripRef = doc(db, 'Trips', id);
+    await deleteDoc(tripRef);
+    return true;
+  } 
+  catch (error) {
+    console.error('Error deleting trip:', error);
+    throw new Error('Failed to delete trip');
+  }
 };
