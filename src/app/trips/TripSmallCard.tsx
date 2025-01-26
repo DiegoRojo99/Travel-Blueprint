@@ -18,7 +18,7 @@ const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: R
   const imageUrl = trip.destinations?.[0].image ?? "/default-image.jpg";
   
   return (
-    <div className="relative bg-gray-100 p-4 rounded shadow-md flex flex-col text-black transform transition-transform hover:-translate-y-2 hover:shadow-lg">
+    <div className="relative bg-gray-100 rounded shadow-md flex flex-col text-black transform transition-transform hover:-translate-y-2 hover:shadow-lg">
       <Link href={`/trips/${trip.id}/details`}>
         <div className="relative">
           <img src={imageUrl} alt={trip.name} className="w-full h-40 object-cover rounded-md" />
@@ -33,18 +33,18 @@ const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: R
 
       {/* Trip Details */}
       <span className="font-semibold text-center mt-2">{trip.name}</span>
-      <span className="mt-2 text-sm">
+      <span className="mt-2 text-sm pl-2">
         <FontAwesomeIcon icon={faCalendar} size="sm" className="text-gray-500 mr-1" />
         {format(trip.startDate, "MMM d")} - {format(trip.endDate, "MMM d")}
       </span>
-      <span className="mt-2 text-sm">
+      <span className="mt-2 text-sm pl-2 pb-2">
         <FontAwesomeIcon icon={faMapPin} size="1x" className="text-gray-500 mr-1" />
         {trip.destinations.map((city: City) => city.name).join(" • ")}
       </span>
 
       
       {showDropdown && (
-        <div className="absolute top-12 right-6 bg-white shadow-lg rounded-md p-2 w-40 z-10">
+        <div className="absolute top-8 right-2 bg-white shadow-lg rounded-md p-2 w-40 z-10">
           <button
             onClick={handleDelete}
             className="flex items-center w-full py-1 px-2 text-left hover:bg-gray-100 rounded-md"
