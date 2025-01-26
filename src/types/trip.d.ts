@@ -1,15 +1,12 @@
+import { City } from "./cities";
+import { LocationAPI } from "./googleAPI";
 import { GoogleSearchResult, StopWithDetails } from "./search";
-
-interface Location {
-  lat: number;
-  lng: number;
-}
 
 interface Stop {
   name: string;
   date: string;
   type: string;
-  location: Location | undefined;
+  location: LocationAPI | undefined;
   notes: string;
 }
 
@@ -17,7 +14,7 @@ interface TripDocument {
   name: string;
   startDate: string;
   endDate: string;
-  destinations: string[];
+  destinations: City[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
@@ -27,7 +24,7 @@ interface Trip {
   name: string;
   startDate: string;
   endDate: string;
-  destinations: string[];
+  destinations: City[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
 }
@@ -36,7 +33,7 @@ interface TripFormState {
   name: string;
   startDate: string;
   endDate: string;
-  destinations: string[];
+  destinations: City[];
 }
 
 export {

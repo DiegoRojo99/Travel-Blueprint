@@ -1,3 +1,4 @@
+import { City } from "@/types/cities";
 import { TripFormState } from "@/types/trip";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +9,7 @@ const TripCreationForm = ({ onTripCreated }: { onTripCreated: (tripId: string) =
   const auth = getAuth();
 
   const [cityQuery, setCityQuery] = useState<string>("");
-  const [cities, setCities] = useState<{ id: string; name: string }[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
   const [tripForm, setTripForm] = useState<TripFormState>({
@@ -57,11 +58,11 @@ const TripCreationForm = ({ onTripCreated }: { onTripCreated: (tripId: string) =
     setLoading(false);
   };
 
-  const handleCitySelect = (city: { id: string; name: string }) => {
-    if (!tripForm.destinations.includes(city.name)) {
+  const handleCitySelect = (city: City) => {
+    if (!tripForm.destinations.map((dest: City) => dest.name).includes(city.name)) {
       setTripForm((prev) => ({
         ...prev,
-        destinations: [...prev.destinations, city.name],
+        destinations: [...prev.destinations, city],
       }));
     }
 
@@ -183,7 +184,7 @@ const TripCreationForm = ({ onTripCreated }: { onTripCreated: (tripId: string) =
         <ul className="w-full border rounded px-3 py-2 bg-gray-50 text-black">
           {tripForm.destinations.map((destination, index) => (
             <li key={index} className="py-1">
-              {destination}
+              {destination.name}
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 onClick={() => removeDestination(index)}

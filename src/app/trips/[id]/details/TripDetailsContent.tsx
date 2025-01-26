@@ -6,6 +6,7 @@ import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
+import { City } from '@/types/cities';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -102,7 +103,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
 
         <div className="flex items-center space-x-2 mb-2">
           <FontAwesomeIcon icon={faMapPin} size="lg" />
-          <span>{trip.destinations?.join(', ')}</span>
+          <span>{trip.destinations.map((city: City) => city.name).join(", ")}</span>
         </div>
         
         <div className="flex justify-between">
