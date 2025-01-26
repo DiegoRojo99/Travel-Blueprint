@@ -2,6 +2,12 @@ import { StopWithDetails } from '@/types/search';
 import { db } from '@/utils/firebase';
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 
+/**
+ * Updates the stops attribute of a trip object.
+ * @param {string} tripId - The id of the trip object to update.
+ * @param {StopWithDetails[]} stops - The stops array that is going to be updated.
+ * @returns {Promise<boolean>} A boolean indicating the result of the operation.
+ */
 export async function updateTripStops(tripId: string, stops: StopWithDetails[]): Promise<boolean> {
   const tripRef = doc(db, 'Trips', tripId);
   

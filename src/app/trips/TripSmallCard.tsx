@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import Link from "next/link";
+import { City } from "@/types/cities";
 
 const TripSmallCard = ({ trip }: { trip: Trip }) => (
   <Link href={`/trips/${trip.id}/details`}>
@@ -17,7 +18,7 @@ const TripSmallCard = ({ trip }: { trip: Trip }) => (
       </span>
       <span>
         <FontAwesomeIcon icon={faMapPin} size="1x" className="text-gray-500 mr-1" />
-        {trip.destination}
+        {trip.destinations.map((city: City) => city.name).join(", ")}
       </span>
     </div>
   </Link>

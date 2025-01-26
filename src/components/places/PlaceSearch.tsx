@@ -81,7 +81,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto">
+    <div className="relative w-full mx-auto my-2">
       <div className="flex border border-gray-300 rounded-md shadow-sm">
         <input
           type="text"

@@ -9,7 +9,7 @@ Travel Blueprint is a modern web application designed to simplify your trip plan
 - **User Authentication**:  
   Secure sign-up and login functionality powered by Firebase Authentication.  
 - **Create and Manage Trips**:  
-  Add trips with a name, start and end dates, and destination details.  
+  Add trips with a name, start and end dates, and destinations.  
 - **Update Trips**:  
   Edit existing trips to adjust travel plans seamlessly.  
 
@@ -29,8 +29,8 @@ Travel Blueprint is a modern web application designed to simplify your trip plan
 ### Short-Term Goals
 - **Itinerary Builder**:  
   Add day-to-day activities and plans for each trip.  
-- **Destination Search**:  
-  Enable destination search with suggestions powered by an external API.  
+- **Festinations Search**:  
+  Enable destination search.
 
 ### Long-Term Goals
 - **Real-Time Flight Prices**:  

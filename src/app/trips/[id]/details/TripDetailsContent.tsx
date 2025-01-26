@@ -6,6 +6,7 @@ import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
+import { City } from '@/types/cities';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -41,7 +42,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         name: trip?.name,
         startDate,
         endDate,
-        destination: trip?.destination,
+        destinations: trip?.destinations,
       };
   
       const response = await fetch(`/api/trips/${id}`, {
@@ -76,7 +77,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   if (!trip) return <Loader />;
   return (
     <div
-      className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800"
+      className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800 h-full"
       // style={{ backgroundImage: `url('/path/to/your/image.jpg')` }}
     >
       <div className="relative z-2 text-black bg-white p-2 sm:p-6 m-2 sm:m-6 rounded-lg">
@@ -102,7 +103,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
 
         <div className="flex items-center space-x-2 mb-2">
           <FontAwesomeIcon icon={faMapPin} size="lg" />
-          <span>{trip.destination}</span>
+          <span>{trip.destinations.map((city: City) => city.name).join(", ")}</span>
         </div>
         
         <div className="flex justify-between">
