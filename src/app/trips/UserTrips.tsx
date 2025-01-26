@@ -5,7 +5,7 @@ import { Trip } from "@/types/trip";
 import Loader from "@/components/loaders/Loader";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const UserTrips = () => {
   const auth = getAuth();
