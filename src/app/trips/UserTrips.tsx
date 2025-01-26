@@ -66,13 +66,7 @@ const UserTrips = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {trips.map((trip) => (
               <div key={trip.id} className="relative">
-                <TripCard trip={trip} />
-                <FontAwesomeIcon
-                  icon={faTrashAlt}
-                  size="lg"
-                  className="text-red-500 cursor-pointer absolute top-4 right-4"
-                  onClick={() => deleteTrip(trip.id)}
-                />
+                <TripCard trip={trip} handleDelete={() => deleteTrip(trip.id)} />
               </div>
             ))}
           </div>
