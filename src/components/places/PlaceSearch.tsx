@@ -1,5 +1,5 @@
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getAuth } from 'firebase/auth';
 import { Trip } from '@/types/trip';
 import { PlaceSearchResultItem } from './PlaceSearchResultItem';
@@ -17,15 +17,38 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
   const [selectedPlace, setSelectedPlace] = useState<GoogleSearchResult | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const auth = getAuth();
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (query.trim() === '') {
+      setResults([]);
+      return;
+    }
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      handleSearch();
+    }, 600);
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [query]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
-    const user = auth.currentUser;
 
+    const user = auth.currentUser;
     if (!user) {
       alert('You must be logged in to search for a place.');
       return;
     }
+
     setLoading(true);
     try {
       const response = await fetch(
@@ -41,6 +64,11 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
     }
   };
 
+  const handleClear = () => {
+    setQuery('');
+    setResults([]);
+  };
+
   const handleSelect = (place: GoogleSearchResult) => {
     setSelectedPlace(place);
     setIsModalOpen(true);
@@ -49,11 +77,12 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
   const handleModalSave = async (place: GoogleSearchResult, notes: string, date: string, isBookmarkOnly: boolean) => {
     const user = auth.currentUser;
     if (!user) {
-      alert("You must be logged in to save a place.");
+      alert('You must be logged in to save a place.');
       return;
     }
+
     try {
-      const endpoint = isBookmarkOnly 
+      const endpoint = isBookmarkOnly
         ? `/api/trips/${trip.id}/places`
         : `/api/trips/${trip.id}/stops`;
 
@@ -71,11 +100,9 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
       } else {
         throw new Error('Failed to save place');
       }
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error saving place:', error);
-    } 
-    finally {
+    } finally {
       setIsModalOpen(false);
     }
   };
@@ -90,12 +117,14 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
           placeholder="Search for a place..."
           className="flex-1 px-4 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
-        <button
-          onClick={handleSearch}
-          className="px-4 bg-blue-500 text-white font-medium rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          🔍
-        </button>
+        {query && (
+          <button
+            onClick={handleClear}
+            className="px-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            ❌
+          </button>
+        )}
       </div>
 
       {loading && <div className="mt-2 text-center text-gray-500">Loading Results...</div>}
