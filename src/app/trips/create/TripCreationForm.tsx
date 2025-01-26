@@ -1,4 +1,6 @@
 import { TripFormState } from "@/types/trip";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getAuth } from "firebase/auth";
 import { useState } from "react";
 
@@ -65,6 +67,12 @@ const TripCreationForm = ({ onTripCreated }: { onTripCreated: (tripId: string) =
 
     setCityQuery("");
     setCities([]);
+  };
+
+  const removeDestination = (index: number) => {
+    const updatedDestinations = [...tripForm.destinations];
+    updatedDestinations.splice(index, 1);
+    setTripForm({ ...tripForm, destinations: updatedDestinations });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -176,6 +184,11 @@ const TripCreationForm = ({ onTripCreated }: { onTripCreated: (tripId: string) =
           {tripForm.destinations.map((destination, index) => (
             <li key={index} className="py-1">
               {destination}
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                onClick={() => removeDestination(index)}
+                className="text-red-500 cursor-pointer ml-2"
+              />
             </li>
           ))}
         </ul>
