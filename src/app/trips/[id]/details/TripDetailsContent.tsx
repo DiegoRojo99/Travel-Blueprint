@@ -7,6 +7,7 @@ import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
 import { City } from '@/types/cities';
+import { format } from "date-fns";
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -76,11 +77,8 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
 
   if (!trip) return <Loader />;
   return (
-    <div
-      className="relative p-2 sm:p-6 bg-cover bg-center bg-gray-800 h-full"
-      // style={{ backgroundImage: `url('/path/to/your/image.jpg')` }}
-    >
-      <div className="relative z-2 text-black bg-white p-2 sm:p-6 m-2 sm:m-6 rounded-lg">
+    <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full" >
+      <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">
@@ -100,36 +98,36 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
             <FontAwesomeIcon icon={faPencil} size="lg" className="cursor-pointer" onClick={handleEditToggle} />
           </div>
         </div>
-
-        <div className="flex items-center space-x-2 mb-2">
-          <FontAwesomeIcon icon={faMapPin} size="lg" />
-          <span>{trip.destinations.map((city: City) => city.name).join(", ")}</span>
+        
+        <div className="flex items-center space-x-2 mb-1">
+          <FontAwesomeIcon icon={faCalendar} size="1x" />
+          {isEditing ? (
+            <div>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => handleDateChange('start', e.target.value)}
+                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
+              />
+              <span className="mx-2">-</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => handleDateChange('end', e.target.value)}
+                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
+              />
+            </div>
+          ) : (
+            <span className="text-1x sm:text-lg">
+              {format(trip.startDate, "MMM d")} - {format(trip.endDate, "MMM d")}
+            </span>
+          )}
         </div>
         
         <div className="flex justify-between">
           <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faCalendar} size="1x" />
-            {isEditing ? (
-              <div>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => handleDateChange('start', e.target.value)}
-                  className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-                />
-                <span className="mx-2">-</span>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => handleDateChange('end', e.target.value)}
-                  className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-                />
-              </div>
-            ) : (
-              <span className="text-1x sm:text-lg">
-                {startDate} - {endDate}
-              </span>
-            )}
+            <FontAwesomeIcon icon={faMapPin} size="lg" />
+            <span>{trip.destinations.map((city: City) => city.name).join(" • ")}</span>
           </div>
           <div>
             <FontAwesomeIcon icon={faUserPlus} size="lg" className="cursor-pointer" />
