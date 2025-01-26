@@ -1,3 +1,4 @@
+import { saveCitiesToFirestore } from "@/db/cities";
 import { addTrip, getUserTrips } from "../../../db/trips";
 
 export async function GET(req) {
@@ -26,6 +27,7 @@ export async function POST(req) {
 
   try {
     const tripId = await addTrip(tripData, userId);
+    await saveCitiesToFirestore(tripData.destinations);
     return new Response(JSON.stringify({ message: 'Trip added successfully', tripId }), {
       status: 201,
       headers: {
