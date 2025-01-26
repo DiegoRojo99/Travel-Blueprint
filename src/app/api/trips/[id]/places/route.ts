@@ -2,15 +2,7 @@ import { getTripById } from "@/db/trips";
 import crypto from 'crypto';
 import { updateTripPlaces } from "../../../../../db/places";
 import { Trip } from "@/types/trip";
-
-interface params {
-  id: string;
-  [key: string]: string;
-}
-
-interface context {
-  params: Promise<params>;
-}
+import { context } from "@/types/routes";
 
 export async function POST(req: Request, context: context): Promise<Response> {
   const { params } = context;
