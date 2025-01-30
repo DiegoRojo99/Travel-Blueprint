@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const SignUpPageContent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp, error } = useAuth();
+  const { signUp, error, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -16,6 +18,13 @@ const SignUpPageContent = () => {
     const isSignedUp = await signUp(email, password);
     if (isSignedUp) {
       router.push('/auth/login');
+    }
+  };
+  
+  const handleGoogleLogin = async () => {
+    const isLoggedIn = await loginWithGoogle();
+    if (isLoggedIn) {
+      router.push('/');
     }
   };
 
@@ -36,6 +45,15 @@ const SignUpPageContent = () => {
         <div className="max-w-md w-full p-6">
           <h1 className="text-3xl font-semibold mb-6 text-black text-center">Sign Up</h1>
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+          
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-white border border-gray-300 text-black p-2 rounded-md flex items-center justify-center gap-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-300"
+          >
+            <FontAwesomeIcon icon={faGoogle} />
+            Sign up with Google
+          </button>
+
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>or with email</p>
           </div>
