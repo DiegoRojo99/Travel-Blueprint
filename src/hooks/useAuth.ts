@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from '@/utils/firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '@/utils/firebase';
 import { FirebaseError } from 'firebase/app';
 
 interface User {
@@ -106,5 +106,16 @@ export const useAuth = () => {
     }
   };
 
-  return { user, login, signUp, logout, error, loading };
+  const loginWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      return true;
+    } catch (err) {
+      setError('Google sign-in failed');
+      console.error(err)
+      return false;
+    }
+  };
+
+  return { user, login, signUp, logout, error, loading, loginWithGoogle };
 };
