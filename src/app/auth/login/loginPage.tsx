@@ -4,16 +4,25 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 const LoginPageContent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, error } = useAuth();
+  const { login, loginWithGoogle, error } = useAuth();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const isLoggedIn = await login(email, password);
+    if (isLoggedIn) {
+      router.push('/');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const isLoggedIn = await loginWithGoogle();
     if (isLoggedIn) {
       router.push('/');
     }
@@ -36,9 +45,19 @@ const LoginPageContent = () => {
         <div className="max-w-md w-full p-6">
           <h1 className="text-3xl font-semibold mb-6 text-black text-center">Login</h1>
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-white border border-gray-300 text-black p-2 rounded-md flex items-center justify-center gap-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-300"
+          >
+            <FontAwesomeIcon icon={faGoogle} />
+            Sign in with Google
+          </button>
+
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>or with email</p>
           </div>
+
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -71,6 +90,7 @@ const LoginPageContent = () => {
               </button>
             </div>
           </form>
+
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>Don&apos;t have an account? <a href="/auth/signup" className="text-black hover:underline">Sign up here</a></p>
           </div>
