@@ -25,7 +25,7 @@ interface TripUser {
   displayName: string;
   photoURL?: string;
   email?: string;
-  role?: 'owner' | 'editor' | 'viewer';
+  role?: 'Owner' | 'Member' | 'Viewer';
 }
 
 interface Trip {
