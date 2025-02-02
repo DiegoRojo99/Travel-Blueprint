@@ -17,6 +17,15 @@ interface TripDocument {
   destinations: City[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
+  users: TripUser[] | undefined;
+}
+
+interface TripUser {
+  uid: string;
+  displayName: string;
+  photoURL?: string;
+  email?: string;
+  role?: 'owner' | 'editor' | 'viewer';
 }
 
 interface Trip {
@@ -25,9 +34,11 @@ interface Trip {
   startDate: string;
   endDate: string;
   destinations: City[];
-  stops: StopWithDetails[] | undefined;
-  places: GoogleSearchResult[] | undefined;
+  stops?: StopWithDetails[];
+  places?: GoogleSearchResult[];
+  users: TripUser[];
 }
+
 
 interface TripFormState {
   name: string;

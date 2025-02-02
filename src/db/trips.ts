@@ -8,12 +8,15 @@ import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, dele
  * @returns {Promise<Trip[]>} A trip array indicating the result of the operation.
  */
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
-  const tripsQuery = query(collection(db, 'Trips'), where('userId', '==', userId));
+  const tripsQuery = query(
+    collection(db, 'Trips'),
+    where('users', 'array-contains', { uid: userId })
+  );  
   const querySnapshot = await getDocs(tripsQuery);
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
     const trip = doc.data() as TripDocument;
-    trips.push({ id: doc.id, ...trip });
+    trips.push({ id: doc.id, ...trip, users: trip.users || [] });
   });
   return trips;
 };
@@ -27,7 +30,7 @@ export const getTrips = async (): Promise<Trip[]> => {
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
     const trip = doc.data() as TripDocument;
-    trips.push({ id: doc.id, ...trip });
+    trips.push({ id: doc.id, ...trip, users: trip.users || []  });
   });
   return trips;
 };
@@ -62,7 +65,7 @@ export const getTripById = async (id: string): Promise<Trip> => {
 
   if (tripSnapshot.exists()) {
     const data = tripSnapshot.data() as TripDocument;
-    return { id: id, ...data };
+    return { id: id, ...data, users: data.users || [] };
   } 
   else {
     throw new Error("Trip not found");
