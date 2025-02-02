@@ -24,8 +24,8 @@ const TripSmallCard = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: R
         <div className="relative">
           <Image
             src={`/api/photos?photoReference=${imageUrl}`}
-            width={100}
-            height={100}
+            width={256}
+            height={160}
             alt={trip.name} 
             className="w-full h-40 object-cover rounded-md" 
             priority
