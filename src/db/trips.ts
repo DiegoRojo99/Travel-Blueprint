@@ -1,4 +1,5 @@
 import { Trip, TripDocument } from '@/types/trip';
+import { UserDB } from '@/types/users';
 import { db } from '@/utils/firebase';
 import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
 
@@ -37,13 +38,12 @@ export const getTrips = async (): Promise<Trip[]> => {
 
 /**
  * Add a new trip associated with a user
- * @param {string} userId - The id of the user that is adding the trip.
  * @param {Trip} tripData - The data of the trip being added.
  * @returns {Promise<string>} A message showing the result of the operation.
  */
-export const addTrip = async (tripData: Trip, userId: string): Promise<string> => {
+export const addTrip = async (tripData: Trip): Promise<string> => {
   try {
-    const docRef = await addDoc(collection(db, 'Trips'), { ...tripData, userId });
+    const docRef = await addDoc(collection(db, 'Trips'), tripData);
     return docRef.id;
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -105,17 +105,31 @@ export const deleteTrip = async (id: string): Promise<boolean> => {
  * Adds a user to a trip in Firestore.
  * @param {string} tripId - The ID of the trip document.
  * @param {string} userId - The ID of the user to add.
+ * @param {string} role - The role the user to add(Owner, Member, Viewer).
  */
-export const addUserToTrip = async (tripId: string, userId: string) => {
+export const addUserToTrip = async (tripId: string, userId: string, role: string): Promise<boolean> => {
   const tripRef = doc(db, 'Trips', tripId);
+  const userRef = doc(db, "Users", userId);
+  const userDoc = await getDoc(userRef);
+
+  if(!userDoc.exists()) return false;
 
   try {
+    const userData = userDoc.data() as UserDB;
+    const user = {
+      uid: userData.id,
+      displayName: userData.name,
+      photoURL: userData.profilePicture,
+      email: userData.email,
+      role: role,
+    }
     await updateDoc(tripRef, {
-      users: arrayUnion(userId),
+      users: arrayUnion(user),
     });
-    console.log(`User ${userId} added to trip ${tripId}.`);
+    return true;
   } 
   catch (error: unknown) {
     console.error("Error adding user to trip:", error);
+    return false;
   }
 };

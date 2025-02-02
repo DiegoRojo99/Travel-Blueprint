@@ -12,7 +12,7 @@ export async function POST(req: Request, context: context): Promise<Response> {
       return new Response(JSON.stringify({ error: "User ID is required" }), { status: 400 });
     }
 
-    await addUserToTrip(tripId, userId);
+    await addUserToTrip(tripId, userId, "Member");
 
     return new Response(JSON.stringify({ message: `User ${userId} added to trip ${tripId}` }), { status: 200 });
   } catch (error) {
