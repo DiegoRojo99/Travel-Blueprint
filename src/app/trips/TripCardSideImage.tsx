@@ -6,6 +6,7 @@ import Link from "next/link";
 import { City } from "@/types/cities";
 import { useState } from "react";
 import Image from "next/image";
+import UserProfiles from "@/components/users/UsersProfiles";
 
 const TripCardSideImage = ({ trip, handleDelete }: { trip: Trip, handleDelete: (e: React.MouseEvent) => void; }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -48,28 +49,11 @@ const TripCardSideImage = ({ trip, handleDelete }: { trip: Trip, handleDelete: (
         </div>
         <Link href={`/trips/${trip.id}/details`}>
           <h3 className="font-bold text-black text-lg mt-2">{trip.name}</h3>
-          <p className="text-gray-600 text-sm mt-1">
+          <p className="text-gray-600 text-sm mt-1 mb-4">
             <FontAwesomeIcon icon={faMapPin} className="mr-1" />
             {trip.destinations.map((city: City) => city.name).join(" • ")}
           </p>
-          
-          {/* User Profile Pictures */}
-          <div className="flex mt-4 mb-2 ml-2 align-center">
-            {trip.users?.slice(0, 3).map((user, index) => (
-              <Image
-                key={index}
-                src={user.photoURL ?? ''}
-                alt={user.displayName}
-                title={user.displayName}
-                width={128}
-                height={128}
-                className="w-8 h-8 rounded-full border-2 border-white -ml-2"
-              />
-            ))}
-            {trip.users?.length > 3 && (
-              <span className="text-gray-600 text-sm">+{trip.users.length - 3}</span>
-            )}
-          </div>
+          <UserProfiles users={trip.users} />
         </Link>
       </div>
 
