@@ -63,7 +63,7 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
         clearTimeout(debounceTimer.current);
       }
     };
-  }, [query]);
+  }, [query, auth.currentUser]);
 
   const handleClear = () => {
     setQuery('');
