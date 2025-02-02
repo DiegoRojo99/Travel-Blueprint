@@ -51,5 +51,6 @@ export {
   Stop,
   TripDocument,
   Trip,
-  TripFormState
+  TripFormState,
+  TripUser
 };
