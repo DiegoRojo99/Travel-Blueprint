@@ -30,3 +30,13 @@ export async function addUserToDB(user: AuthUser) {
     console.error('Error adding user:', error);
   }
 }
+
+export async function getUser(uid: string) {
+  if (!uid) return;
+  const userRef = doc(db, 'Users', uid);
+  const userSnap = await getDoc(userRef);
+
+  if(!userSnap.exists()) return;
+  const userData = userSnap.data() as UserDB;
+  return userData;
+}
