@@ -20,6 +20,31 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    
+    const handleSearch = async () => {
+      if (!query.trim()) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert('You must be logged in to search for a place.');
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/places/search?query=${encodeURIComponent(query)}`,
+          { headers: { 'x-user-id': user.uid } }
+        );
+        const data: GoogleSearchResult[] = await response.json();
+        setResults(data);
+      } catch (error) {
+        console.error('Error fetching places:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (query.trim() === '') {
       setResults([]);
       return;
@@ -39,30 +64,6 @@ export const PlaceSearch: React.FC<PlaceSearchProps> = ({ trip, addSearchItem })
       }
     };
   }, [query]);
-
-  const handleSearch = async () => {
-    if (!query.trim()) return;
-
-    const user = auth.currentUser;
-    if (!user) {
-      alert('You must be logged in to search for a place.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `/api/places/search?query=${encodeURIComponent(query)}`,
-        { headers: { 'x-user-id': user.uid } }
-      );
-      const data: GoogleSearchResult[] = await response.json();
-      setResults(data);
-    } catch (error) {
-      console.error('Error fetching places:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleClear = () => {
     setQuery('');
