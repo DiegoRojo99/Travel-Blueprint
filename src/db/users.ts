@@ -1,6 +1,6 @@
 import { AuthUser, UserDB } from '@/types/users';
 import { db } from '@/utils/firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function addUserToDB(user: AuthUser) {
   if (!user?.uid) return;
@@ -39,4 +39,22 @@ export async function getUser(uid: string) {
   if(!userSnap.exists()) return;
   const userData = userSnap.data() as UserDB;
   return userData;
+}
+
+export async function getUsersByEmailOrName(querySearch: string) {
+  const usersRef = collection(db, 'Users');
+  let users: UserDB[] = [];
+
+  const emailQuery = query(usersRef, where('email', '==', querySearch));
+  const emailSnapshot = await getDocs(emailQuery);
+  users = users.concat(emailSnapshot.docs.map(doc => doc.data() as UserDB ));
+
+  const nameQuery = query(usersRef, where('name', '==', querySearch));
+  const nameSnapshot = await getDocs(nameQuery);
+  users = users.concat(nameSnapshot.docs.map(doc => doc.data() as UserDB ));
+
+  // Remove duplicates
+  const uniqueUsers = Array.from(new Map(users.map(user => [user.id, user])).values());
+
+  return uniqueUsers;
 }
