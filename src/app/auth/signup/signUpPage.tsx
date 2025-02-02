@@ -10,12 +10,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const SignUpPageContent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp, error, loginWithGoogle } = useAuth();
+  const { signup, error, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isSignedUp = await signUp(email, password);
+    const isSignedUp = await signup(email, password);
     if (isSignedUp) {
       router.push('/auth/login');
     }
