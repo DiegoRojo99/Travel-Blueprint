@@ -1,5 +1,5 @@
 import { saveCitiesToFirestore } from "@/db/cities";
-import { addTrip, deleteTrip, getUserTrips } from "../../../db/trips";
+import { addTrip, addUserToTrip, deleteTrip, getUserTrips } from "../../../db/trips";
 import { context } from "@/types/routes";
 
 export async function GET(req: Request) {
@@ -27,8 +27,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    const tripId = await addTrip(tripData, userId);
+    const tripId = await addTrip(tripData);
     await saveCitiesToFirestore(tripData.destinations);
+    await addUserToTrip(tripId, userId, "Owner");
     return new Response(JSON.stringify({ message: 'Trip added successfully', tripId }), {
       status: 201,
       headers: {

@@ -1,6 +1,7 @@
 import { Trip, TripDocument } from '@/types/trip';
+import { UserDB } from '@/types/users';
 import { db } from '@/utils/firebase';
-import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
 
 /**
  * Fetch trips from Firestore for a specific user
@@ -8,11 +9,14 @@ import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, dele
  * @returns {Promise<Trip[]>} A trip array indicating the result of the operation.
  */
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
-  const tripsQuery = query(collection(db, 'Trips'), where('userId', '==', userId));
+  const tripsRef = collection(db, 'Trips');
+  const tripsQuery = query(tripsRef);
   const querySnapshot = await getDocs(tripsQuery);
+  
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
     const trip = doc.data() as TripDocument;
+    if(!trip.users?.some(user => user.uid === userId)) return;
     trips.push({ id: doc.id, ...trip });
   });
   return trips;
@@ -34,13 +38,12 @@ export const getTrips = async (): Promise<Trip[]> => {
 
 /**
  * Add a new trip associated with a user
- * @param {string} userId - The id of the user that is adding the trip.
  * @param {Trip} tripData - The data of the trip being added.
  * @returns {Promise<string>} A message showing the result of the operation.
  */
-export const addTrip = async (tripData: Trip, userId: string): Promise<string> => {
+export const addTrip = async (tripData: Trip): Promise<string> => {
   try {
-    const docRef = await addDoc(collection(db, 'Trips'), { ...tripData, userId });
+    const docRef = await addDoc(collection(db, 'Trips'), tripData);
     return docRef.id;
   } catch (e) {
     console.error('Error adding document: ', e);
@@ -95,5 +98,38 @@ export const deleteTrip = async (id: string): Promise<boolean> => {
   catch (error) {
     console.error('Error deleting trip:', error);
     throw new Error('Failed to delete trip');
+  }
+};
+
+/**
+ * Adds a user to a trip in Firestore.
+ * @param {string} tripId - The ID of the trip document.
+ * @param {string} userId - The ID of the user to add.
+ * @param {string} role - The role the user to add(Owner, Member, Viewer).
+ */
+export const addUserToTrip = async (tripId: string, userId: string, role: string): Promise<boolean> => {
+  const tripRef = doc(db, 'Trips', tripId);
+  const userRef = doc(db, "Users", userId);
+  const userDoc = await getDoc(userRef);
+
+  if(!userDoc.exists()) return false;
+
+  try {
+    const userData = userDoc.data() as UserDB;
+    const user = {
+      uid: userData.id,
+      displayName: userData.name,
+      photoURL: userData.profilePicture,
+      email: userData.email,
+      role: role,
+    }
+    await updateDoc(tripRef, {
+      users: arrayUnion(user),
+    });
+    return true;
+  } 
+  catch (error: unknown) {
+    console.error("Error adding user to trip:", error);
+    return false;
   }
 };

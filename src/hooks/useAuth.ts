@@ -1,121 +1,103 @@
 import { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/utils/firebase';
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { addUserToDB } from '@/db/users';
+import { AuthUser } from '@/types/users';
 import { FirebaseError } from 'firebase/app';
 
-interface User {
-  uid: string;
-  email: string | null;
-  displayName?: string | null;
-  photoURL?: string | null;
-}
-
-export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null); // Current User
+export function useAuth() {
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
-  // Track user authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+      setLoading(false);
+
+      if (firebaseUser) {
+        const authUser: AuthUser = {
+          uid: firebaseUser.uid,
+          displayName: firebaseUser.displayName,
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL,
+          providerData: firebaseUser.providerData.map((provider) => ({
+            providerId: provider.providerId,
+          })),
+        };
+        await addUserToDB(authUser);
+      }
     });
+
     return () => unsubscribe();
   }, []);
 
-  // Login function
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
+  async function login(email: string, password: string) {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      return true;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setError(null);
+      return userCredential.user;
     } 
-    catch (error: unknown) {
-      if (error instanceof FirebaseError) {
-        console.error("Firebase Error during login:", error);
-        if (error.code === 'auth/user-not-found') {
-          setError('User not found');
-        }
-        else if (error.code === 'auth/invalid-credential') {
-          setError('Invalid credentials');
-        }
-        else {
-          setError('An unknown error occurred');
-        }
-      }
-      else if (error instanceof Error) {
-        console.error("Error during login:", error);
-        setError(error.message);
-      }
-      else {
-        setError('An unknown error occurred');
-      }
-      return false;
-    } 
-    finally {
-      setLoading(false);
+    catch (err) {
+      setError((err as FirebaseError).message);
+      return null;
     }
-  };
+  }
 
-  // Sign Up function
-  const signUp = async (email: string, password: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
+  async function signup(email: string, password: string, displayName?: string) {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      return true;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+
+      const authUser: AuthUser = {
+        uid: firebaseUser.uid,
+        displayName: displayName || firebaseUser.displayName || null,
+        email: firebaseUser.email,
+        photoURL: firebaseUser.photoURL,
+        providerData: firebaseUser.providerData.map((provider) => ({
+          providerId: provider.providerId,
+        })),
+      };
+
+      await addUserToDB(authUser);
+      setError(null);
+      return firebaseUser;
     } 
-    catch (error: unknown) {
-      
-      if (error instanceof FirebaseError) {
-        console.error("Firebase Error during set up:", error.code);
-        if (error.code === 'auth/email-already-in-use') {
-          setError('Email already in use');
-        }
-        else if (error.code === 'auth/invalid-email') {
-          setError('Invalid email');
-        }
-        else if (error.code === 'auth/weak-password') {
-          setError('Weak password');
-        }
-        else {
-          setError('An unknown error occurred');
-        }
-      }
-      else if (error instanceof Error) {
-        console.error("Error during login:", error);
-        setError(error.message);
-      } else {
-        setError('An unknown error occurred');
-      }
-      return false;
-    } 
-    finally {
-      setLoading(false);
+    catch (err) {
+      setError((err as FirebaseError).message);
+      return null;
     }
-  };
+  }
 
-  // Logout function
-  const logout = async (): Promise<void> => {
+  async function loginWithGoogle() {
     try {
-      await signOut(auth);
-      setUser(null);
-    } catch (error: unknown) {
-      console.error("Error during logout:", error);
-    }
-  };
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const firebaseUser = userCredential.user;
 
-  const loginWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      return true;
-    } catch (err) {
-      setError('Google sign-in failed');
-      console.error(err)
-      return false;
-    }
-  };
+      const authUser: AuthUser = {
+        uid: firebaseUser.uid,
+        displayName: firebaseUser.displayName,
+        email: firebaseUser.email,
+        photoURL: firebaseUser.photoURL,
+        providerData: firebaseUser.providerData.map((provider) => ({
+          providerId: provider.providerId,
+        })),
+      };
 
-  return { user, login, signUp, logout, error, loading, loginWithGoogle };
-};
+      await addUserToDB(authUser);
+      setError(null);
+      return firebaseUser;
+    }
+    catch (err) {
+      setError((err as FirebaseError).message);
+      return null;
+    }
+  }
+
+  async function logout() {
+    await auth.signOut();
+    setUser(null);
+  }
+
+  return { user, loading, error, login, signup, loginWithGoogle, logout };
+}

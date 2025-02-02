@@ -19,8 +19,8 @@ const NavBarContent = () => {
   };
 
   return (
-    <nav className="bg-black text-white px-4 py-3 relative">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-black text-white px-4 py-3 relative w-full">
+      <div className="mx-0 w-full flex justify-between items-center">
         {/* Logo */}
         <NavBarLink href="/" onClick={closeMenu} className="text-xl font-bold">
           Travel Blueprint
