@@ -1,7 +1,7 @@
 import { Trip, TripDocument } from '@/types/trip';
 import { UserDB } from '@/types/users';
 import { db } from '@/utils/firebase';
-import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
 
 /**
  * Fetch trips from Firestore for a specific user
@@ -9,15 +9,15 @@ import { collection, getDocs, addDoc, query, where, getDoc, updateDoc, doc, dele
  * @returns {Promise<Trip[]>} A trip array indicating the result of the operation.
  */
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
-  const tripsQuery = query(
-    collection(db, 'Trips'),
-    where('users', 'array-contains', { uid: userId })
-  );  
+  const tripsRef = collection(db, 'Trips');
+  const tripsQuery = query(tripsRef);
   const querySnapshot = await getDocs(tripsQuery);
+  
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
     const trip = doc.data() as TripDocument;
-    trips.push({ id: doc.id, ...trip, users: trip.users || [] });
+    if(!trip.users?.some(user => user.uid === userId)) return;
+    trips.push({ id: doc.id, ...trip });
   });
   return trips;
 };
@@ -31,7 +31,7 @@ export const getTrips = async (): Promise<Trip[]> => {
   const trips: Trip[] = [];
   querySnapshot.forEach((doc) => {
     const trip = doc.data() as TripDocument;
-    trips.push({ id: doc.id, ...trip, users: trip.users || []  });
+    trips.push({ id: doc.id, ...trip });
   });
   return trips;
 };
@@ -65,7 +65,7 @@ export const getTripById = async (id: string): Promise<Trip> => {
 
   if (tripSnapshot.exists()) {
     const data = tripSnapshot.data() as TripDocument;
-    return { id: id, ...data, users: data.users || [] };
+    return { id: id, ...data };
   } 
   else {
     throw new Error("Trip not found");

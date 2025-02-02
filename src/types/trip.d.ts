@@ -17,7 +17,7 @@ interface TripDocument {
   destinations: City[];
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
-  users: TripUser[] | undefined;
+  users: TripUser[];
 }
 
 interface TripUser {
