@@ -1,6 +1,6 @@
 import { getAuth } from "firebase/auth";
 import { useEffect, useState } from "react";
-import TripCard from "./TripSmallCard";
+import TripCard from "./TripCardSideImage";
 import { Trip } from "@/types/trip";
 import Loader from "@/components/loaders/Loader";
 import Link from "next/link";
@@ -63,7 +63,7 @@ const UserTrips = () => {
         !trips.length ? (
           <p className="text-gray-600">No trips yet. Start planning!</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {trips.map((trip) => (
               <div key={trip.id} className="relative">
                 <TripCard trip={trip} handleDelete={() => deleteTrip(trip.id)} />
