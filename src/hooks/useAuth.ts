@@ -3,6 +3,7 @@ import { auth, googleProvider } from '@/utils/firebase';
 import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { addUserToDB } from '@/db/users';
 import { AuthUser } from '@/types/users';
+import { FirebaseError } from 'firebase/app';
 
 export function useAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -36,8 +37,9 @@ export function useAuth() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setError(null);
       return userCredential.user;
-    } catch (err) {
-      setError('Invalid email or password');
+    } 
+    catch (err) {
+      setError((err as FirebaseError).message);
       return null;
     }
   }
@@ -60,8 +62,9 @@ export function useAuth() {
       await addUserToDB(authUser);
       setError(null);
       return firebaseUser;
-    } catch (err) {
-      setError('Failed to create account');
+    } 
+    catch (err) {
+      setError((err as FirebaseError).message);
       return null;
     }
   }
@@ -84,8 +87,9 @@ export function useAuth() {
       await addUserToDB(authUser);
       setError(null);
       return firebaseUser;
-    } catch (err) {
-      setError('Google login failed');
+    }
+    catch (err) {
+      setError((err as FirebaseError).message);
       return null;
     }
   }
