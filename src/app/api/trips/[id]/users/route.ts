@@ -1,7 +1,8 @@
 import { addUserToTrip } from "@/db/trips";
+import { context } from "@/types/routes";
 
-export async function POST(req: Request, context: { params: { tripId: string } }): Promise<Response> {
-  const { tripId } = context.params;
+export async function POST(req: Request, context: context): Promise<Response> {
+  const { tripId } = await context.params;
 
   try {
     const body = await req.json();
