@@ -1,7 +1,5 @@
 import { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
@@ -12,7 +10,7 @@ import { sendRequestWithToken } from '@/lib/api';
 import DateSelector from './components/DateSelector';
 import TripDestinations from './components/TripDestinations';
 import AddUserModal from './components/AddUserModal';
-import TripOverlay from './components/TripOverlay';
+import TripName from './components/TripName';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -142,8 +140,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   return (
     <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
       <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
-        {/* Trip Details */}
-        <TripOverlay
+        <TripName
           isEditing={isEditing}
           trip={trip}
           setTrip={setTrip}

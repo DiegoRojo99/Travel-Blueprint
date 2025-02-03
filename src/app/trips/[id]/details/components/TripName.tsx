@@ -3,14 +3,14 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SetStateAction } from "react";
 
-interface TripOverlayProps {
+interface TripNameProps {
   isEditing: boolean;
   handleEditToggle: () => void;
   trip: Trip | null;
   setTrip:(value: SetStateAction<Trip | null>) => void;
 }
 
-export default function TripOverlay({handleEditToggle, isEditing, trip, setTrip}: TripOverlayProps){
+export default function TripName({handleEditToggle, isEditing, trip, setTrip}: TripNameProps){
   return (
     <div className="flex justify-between items-center mb-6">
       <div>
