@@ -24,8 +24,8 @@ export async function addUserToDB(user: AuthUser) {
 
   try {
     await setDoc(userRef, userData, { merge: true });
-    console.log('User added/updated in Firestore');
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error adding user:', error);
   }
 }
