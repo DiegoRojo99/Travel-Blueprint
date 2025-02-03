@@ -12,7 +12,7 @@ export default function UserProfiles({ users }: {users: TripUser[]}){
           title={user.displayName}
           width={128}
           height={128}
-          className="w-8 h-8 rounded-full border-2 border-white -ml-2"
+          className={`w-8 h-8 rounded-full border-2 border-white ${index>0 ? "-ml-2" : ''}`}
         />
       ))}
       {users?.length > 3 && (
