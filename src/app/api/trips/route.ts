@@ -1,7 +1,7 @@
-import { saveCitiesToFirestore } from "@/db/cities";
-import { addTrip, addUserToTrip, deleteTrip, getUserTrips } from "../../../db/trips";
+import { addTrip, deleteTrip, getUserTrips } from "../../../db/trips";
 import { context } from "@/types/routes";
 import { authenticateToken } from "@/lib/token";
+import { getUser } from "@/db/users";
 
 export async function GET(req: Request) {
   try {
@@ -32,10 +32,20 @@ export async function POST(req: Request) {
     return new Response('Unauthorized: Missing user ID', { status: 401 });
   }
 
-  try {
-    const tripId = await addTrip(tripData);
-    await saveCitiesToFirestore(tripData.destinations);
-    await addUserToTrip(tripId, userId, "Owner");
+  const userData = await getUser(userId);
+  if(!userData){
+    return new Response('Unauthorized: Missing user', { status: 401 });
+  }
+
+  try {    
+    const user = {
+      uid: userData.id,
+      displayName: userData.name,
+      photoURL: userData.profilePicture,
+      email: userData.email,
+      role: 'Owner',
+    };
+    const tripId = await addTrip({...tripData, userIds: [userId], users: [{...user, role: 'Owner'}]});
     return new Response(JSON.stringify({ message: 'Trip added successfully', tripId }), {
       status: 201,
       headers: {

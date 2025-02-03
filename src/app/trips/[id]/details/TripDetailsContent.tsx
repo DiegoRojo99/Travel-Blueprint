@@ -1,22 +1,23 @@
 import { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
-import { City } from '@/types/cities';
-import { format } from "date-fns";
 import { UserDB } from '@/types/users';
-import UserProfiles from '@/components/users/UsersProfiles';
 import { useAuth } from '@/hooks/useAuth';
 import { sendRequestWithToken } from '@/lib/api';
+import DateSelector from './components/DateSelector';
+import TripDestinations from './components/TripDestinations';
+import AddUserModal from './components/AddUserModal';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const {user, getToken} = useAuth();
   const [trip, setTrip] = useState<Trip | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
@@ -28,9 +29,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const memoizedGetToken = useCallback(() => getToken(), [getToken]);
   useEffect(() => {
     const fetchTrip = async () => {
-      
       if (!user) {
-        console.log('User not authenticated');
         return;
       }
 
@@ -42,13 +41,17 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         setTrip(data);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
-      } catch (error) {
+      }
+      catch (error) {
         console.error('Error fetching trip:', error);
+      } 
+      finally {
+        setLoading(false);
       }
     };
 
-    fetchTrip();
-  }, [id, user]);
+    if(loading) fetchTrip();
+  }, [id, user, loading]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
 
@@ -73,12 +76,14 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         throw new Error('Failed to update the trip');
       }
 
-      const updatedData = await response.json();
-      setTrip(updatedData);
       setIsEditing(false);
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error updating trip:', error);
       alert('Failed to update the trip. Please try again.');
+    }
+    finally{      
+      setLoading(true);
     }
   };
 
@@ -118,18 +123,21 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       if (!response.ok) {
         throw new Error('Failed to add user to the trip');
       }
-
-      const updatedTrip = await response.json();
-      setTrip(updatedTrip);
+        
       setIsAddingUser(false);
       alert('User added successfully!');
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error adding user to trip:', error);
       alert('Failed to add user to the trip.');
     }
+    finally{      
+      setLoading(false);
+    }
   };
 
-  if (!trip) return <Loader />;
+  if (loading) return <Loader />;
+  if(!trip) return <></>;
   return (
     <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
       <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
@@ -154,94 +162,30 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           </div>
         </div>
 
-        {/* Dates */}
-        <div className="flex items-center space-x-2 mb-1">
-          <FontAwesomeIcon icon={faCalendar} size="1x" />
-          {isEditing ? (
-            <div>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => handleDateChange('start', e.target.value)}
-                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-              />
-              <span className="mx-2">-</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => handleDateChange('end', e.target.value)}
-                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-              />
-            </div>
-          ) : (
-            <span className="text-1x sm:text-lg">
-              {format(trip?.startDate, "MMM d")} - {format(trip?.endDate, "MMM d")}
-            </span>
-          )}
-        </div>
+        <DateSelector
+          startDate={startDate}
+          endDate={endDate}
+          isEditing={isEditing}
+          handleDateChange={handleDateChange}
+          trip={trip}
+        />
 
-        {/* Destinations */}
-        <div className="flex justify-between">
-          <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faMapPin} size="lg" />
-            <span>
-              {trip?.destinations.slice(0, 3).map((city: City) => city.name).join(" • ")}
-              {trip?.destinations?.length > 3 && ` • +${trip.destinations.length - 3}`}
-            </span>
-          </div>
-          <div className='flex'>
-            <UserProfiles users={trip.users} />
-            <FontAwesomeIcon
-              icon={faUserPlus}
-              size="lg"
-              className="cursor-pointer my-auto ml-2"
-              onClick={() => setIsAddingUser(!isAddingUser)}
-            />
-          </div>
-        </div>
-
-        {/* Add User Modal */}
-        {isAddingUser && (
-          <div className="mt-4 bg-gray-100 p-4 rounded-lg">
-            <h3 className="text-lg font-bold mb-2">Add User to Trip</h3>
-            <input
-              type="text"
-              value={userSearchQuery}
-              onChange={(e) => setUserSearchQuery(e.target.value)}
-              className="w-full p-2 border rounded-md mb-2"
-              placeholder="Search users by name or email"
-            />
-            <button
-              onClick={handleUserSearch}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-            >
-              Search
-            </button>
-
-            <ul className="mt-4">
-              {searchResults.map((user: UserDB) => (
-                <li
-                  key={user.id}
-                  className="p-2 border rounded-md mb-2 cursor-pointer hover:bg-gray-200"
-                  onClick={() => setSelectedUser(user)}
-                >
-                  {user.name} ({user.email})
-                </li>
-              ))}
-            </ul>
-
-            {selectedUser && (
-              <div className="mt-4">
-                <button
-                  onClick={handleAddUser}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md"
-                >
-                  Add {selectedUser.name} to Trip
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+        <TripDestinations 
+          trip={trip} 
+          setIsAddingUser={setIsAddingUser} 
+          isAddingUser={isAddingUser} 
+        />
+        
+        <AddUserModal
+          isAddingUser={isAddingUser}
+          userSearchQuery={userSearchQuery}
+          setUserSearchQuery={setUserSearchQuery}
+          handleUserSearch={handleUserSearch}
+          searchResults={searchResults}
+          setSelectedUser={setSelectedUser}
+          selectedUser={selectedUser}
+          handleAddUser={handleAddUser}
+        />
 
         {/* Edit Buttons */}
         {isEditing && (

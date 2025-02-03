@@ -35,7 +35,7 @@ export async function getUser(uid: string) {
   const userRef = doc(db, 'Users', uid);
   const userSnap = await getDoc(userRef);
 
-  if(!userSnap.exists()) return;
+  if(!userSnap.exists()) return false;
   const userData = userSnap.data() as UserDB;
   return userData;
 }
