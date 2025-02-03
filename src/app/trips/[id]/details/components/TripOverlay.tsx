@@ -45,7 +45,8 @@ const TripOverlay = ({
   handleSaveChanges
 }: TripOverlayProps) => {
   return (
-    <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
+    <div className="absolute relative bg-white z-10 p-4 sm:p-6 text-black rounded-lg
+      w-[90%] top-64 left-1/2 transform -translate-x-1/2 -translate-y-1/2  ">
       <TripName
         isEditing={isEditing}
         trip={trip}

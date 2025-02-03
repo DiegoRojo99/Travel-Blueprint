@@ -7,6 +7,7 @@ import { sendRequestWithToken } from '@/lib/api';
 import PlaceSection from '@/components/places/PlaceSection';
 import Itinerary from '@/components/itinerary/Itinerary';
 import TripOverlay from './components/TripOverlay';
+import Image from 'next/image';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -127,35 +128,54 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   if (loading) return <Loader />;
   if (!trip) return <></>;
 
+  const imageUrl = trip.destinations?.[0].image ?? '';
   return (
-    <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
-      <TripOverlay
-        isEditing={isEditing}
-        trip={trip}
-        setTrip={setTrip}
-        handleEditToggle={handleEditToggle}
-        startDate={startDate}
-        endDate={endDate}
-        handleDateChange={handleDateChange}
-        setIsAddingUser={setIsAddingUser}
-        isAddingUser={isAddingUser}
-        userSearchQuery={userSearchQuery}
-        setUserSearchQuery={setUserSearchQuery}
-        handleUserSearch={handleUserSearch}
-        searchResults={searchResults}
-        setSelectedUser={setSelectedUser}
-        selectedUser={selectedUser}
-        handleAddUser={handleAddUser}
-        handleSaveChanges={handleSaveChanges}
-      />
-      <PlaceSection
-        trip={trip}
-        onPlaceAdded={(selectedPlace: any) =>
-          setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
-        onStopAdded={(selectedStop: any) =>
-          setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
-      />
-      <Itinerary trip={trip} />
+    <div className="relative bg-cover bg-center bg-gray-800 h-full">
+      <div className="relative w-full h-[300px] justify-center">
+        <Image
+          src={`/api/photos?photoReference=${imageUrl}`} 
+          width={300}
+          height={871}
+          alt={trip.name}
+          className="absolute inset-0 w-full h-full object-cover"
+          priority
+        />
+        {/* <img 
+          src={`/api/photos?photoReference=${imageUrl}`}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        /> */}
+        <TripOverlay
+          isEditing={isEditing}
+          trip={trip}
+          setTrip={setTrip}
+          handleEditToggle={handleEditToggle}
+          startDate={startDate}
+          endDate={endDate}
+          handleDateChange={handleDateChange}
+          setIsAddingUser={setIsAddingUser}
+          isAddingUser={isAddingUser}
+          userSearchQuery={userSearchQuery}
+          setUserSearchQuery={setUserSearchQuery}
+          handleUserSearch={handleUserSearch}
+          searchResults={searchResults}
+          setSelectedUser={setSelectedUser}
+          selectedUser={selectedUser}
+          handleAddUser={handleAddUser}
+          handleSaveChanges={handleSaveChanges}
+        />
+      </div>
+
+      <div className='p-2 sm:p-4 mt-6'>
+        <PlaceSection
+          trip={trip}
+          onPlaceAdded={(selectedPlace: any) =>
+            setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
+          onStopAdded={(selectedStop: any) =>
+            setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
+        />
+        <Itinerary trip={trip} />
+      </div>
     </div>
   );
 };
