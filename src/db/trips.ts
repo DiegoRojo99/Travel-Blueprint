@@ -1,7 +1,9 @@
 import { Trip, TripDocument } from '@/types/trip';
 import { UserDB } from '@/types/users';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, query, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
+import { collection, getDocs, addDoc, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
+import { adminDB } from '@/lib/firebaseAdmin';
+
 
 /**
  * Fetch trips from Firestore for a specific user
@@ -9,16 +11,17 @@ import { collection, getDocs, addDoc, query, getDoc, updateDoc, doc, deleteDoc, 
  * @returns {Promise<Trip[]>} A trip array indicating the result of the operation.
  */
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
-  const tripsRef = collection(db, 'Trips');
-  const tripsQuery = query(tripsRef);
-  const querySnapshot = await getDocs(tripsQuery);
-  
+  const tripsRef = adminDB.collection('Trips');
+  const tripsSnapshot = await tripsRef.get();
+
   const trips: Trip[] = [];
-  querySnapshot.forEach((doc) => {
+  tripsSnapshot.forEach(doc => {
     const trip = doc.data() as TripDocument;
-    if(!trip.users?.some(user => user.uid === userId)) return;
-    trips.push({ id: doc.id, ...trip });
+    if (trip.users?.some((user: { uid: string }) => user.uid === userId)) {
+      trips.push({ id: doc.id, ...trip });
+    }
   });
+
   return trips;
 };
 
