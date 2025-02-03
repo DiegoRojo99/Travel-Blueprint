@@ -50,7 +50,7 @@ export const getTripById = async (id: string): Promise<Trip> => {
   if (!tripSnapshot.exists) {
     throw new Error("Trip not found");
   } 
-  console.log("Trip Snap:", tripSnapshot);
+  
   const data = tripSnapshot.data() as unknown as TripDocument;
   return { id: id, ...data };
 };

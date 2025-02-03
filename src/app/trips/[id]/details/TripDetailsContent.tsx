@@ -1,21 +1,18 @@
-import { use, useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
-import Itinerary from '@/components/itinerary/Itinerary';
-import { GoogleSearchResult, StopWithDetails } from '@/types/search';
-import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
 import { UserDB } from '@/types/users';
 import { useAuth } from '@/hooks/useAuth';
 import { sendRequestWithToken } from '@/lib/api';
-import DateSelector from './components/DateSelector';
-import TripDestinations from './components/TripDestinations';
-import AddUserModal from './components/AddUserModal';
+import PlaceSection from '@/components/places/PlaceSection';
+import Itinerary from '@/components/itinerary/Itinerary';
+import TripOverlay from './components/TripOverlay';
+import Image from 'next/image';
+import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
-  const {user, getToken} = useAuth();
+  const { user, getToken } = useAuth();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -27,30 +24,27 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const [selectedUser, setSelectedUser] = useState<null | UserDB>(null);
   
   const memoizedGetToken = useCallback(() => getToken(), [getToken]);
+
   useEffect(() => {
     const fetchTrip = async () => {
-      if (!user) {
-        return;
-      }
+      if (!user) return;
 
       try {
         const data = await sendRequestWithToken(`/api/trips/${id}`, memoizedGetToken, {
           method: 'GET',
         });
-        
+
         setTrip(data);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching trip:', error);
-      } 
-      finally {
+      } finally {
         setLoading(false);
       }
     };
 
-    if(loading) fetchTrip();
+    if (loading) fetchTrip();
   }, [id, user, loading]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
@@ -77,12 +71,10 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       }
 
       setIsEditing(false);
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error updating trip:', error);
       alert('Failed to update the trip. Please try again.');
-    }
-    finally{      
+    } finally {
       setLoading(true);
     }
   };
@@ -123,60 +115,46 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       if (!response.ok) {
         throw new Error('Failed to add user to the trip');
       }
-        
+
       setIsAddingUser(false);
       alert('User added successfully!');
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error adding user to trip:', error);
       alert('Failed to add user to the trip.');
-    }
-    finally{      
+    } finally {
       setLoading(false);
     }
   };
 
   if (loading) return <Loader />;
-  if(!trip) return <></>;
-  return (
-    <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
-      <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
-        {/* Trip Details */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={trip.name}
-                  onChange={(e) => setTrip({ ...trip, name: e.target.value })}
-                  className="bg-transparent border-b-2 border-white text-xl sm:text-3xl"
-                />
-              ) : (
-                trip.name
-              )}
-            </h1>
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faPencil} size="lg" className="cursor-pointer" onClick={handleEditToggle} />
-          </div>
-        </div>
+  if (!trip) return <></>;
 
-        <DateSelector
+  const imageUrl = trip.destinations?.[0].image ?? '';
+  return (
+    <div className="relative bg-cover bg-center bg-gray-800 h-full">
+      <div className="relative w-full h-[300px] justify-center">
+        <Image
+          src={`/api/photos?photoReference=${imageUrl}`} 
+          width={300}
+          height={871}
+          alt={trip.name}
+          className="absolute inset-0 w-full h-full object-cover"
+          priority
+        />
+        {/* <img 
+          src={`/api/photos?photoReference=${imageUrl}`}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        /> */}
+        <TripOverlay
+          isEditing={isEditing}
+          trip={trip}
+          setTrip={setTrip}
+          handleEditToggle={handleEditToggle}
           startDate={startDate}
           endDate={endDate}
-          isEditing={isEditing}
           handleDateChange={handleDateChange}
-          trip={trip}
-        />
-
-        <TripDestinations 
-          trip={trip} 
-          setIsAddingUser={setIsAddingUser} 
-          isAddingUser={isAddingUser} 
-        />
-        
-        <AddUserModal
+          setIsAddingUser={setIsAddingUser}
           isAddingUser={isAddingUser}
           userSearchQuery={userSearchQuery}
           setUserSearchQuery={setUserSearchQuery}
@@ -185,30 +163,20 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           setSelectedUser={setSelectedUser}
           selectedUser={selectedUser}
           handleAddUser={handleAddUser}
+          handleSaveChanges={handleSaveChanges}
         />
-
-        {/* Edit Buttons */}
-        {isEditing && (
-          <div className="mt-6">
-            <button onClick={handleSaveChanges} className="bg-blue-500 text-white px-6 py-2 rounded-md">
-              Save Changes
-            </button>
-            <button onClick={handleEditToggle} className="bg-gray-500 text-white px-6 py-2 rounded-md ml-4">
-              Cancel
-            </button>
-          </div>
-        )}
       </div>
 
-      {/* Components */}
-      <PlaceSection
-        trip={trip}
-        onPlaceAdded={(selectedPlace: GoogleSearchResult) =>
-          setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
-        onStopAdded={(selectedStop: StopWithDetails) =>
-          setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
-      />
-      <Itinerary trip={trip} />
+      <div className='p-2 sm:p-4 mt-6'>
+        <PlaceSection
+          trip={trip}
+          onPlaceAdded={(selectedPlace: GoogleSearchResult) =>
+            setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
+          onStopAdded={(selectedStop: StopWithDetails) =>
+            setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
+        />
+        <Itinerary trip={trip} />
+      </div>
     </div>
   );
 };
