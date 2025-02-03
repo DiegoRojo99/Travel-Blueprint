@@ -9,10 +9,11 @@ interface DateSelectorProps {
   endDate: string;
   isEditing: boolean;
   handleDateChange: (dateType: 'start' | 'end', date: string) => void;
-  trip: Trip;
+  trip: Trip | null;
 }
 
 function DateSelector({ startDate, endDate, isEditing, handleDateChange, trip }: DateSelectorProps) {
+  if(!trip?.startDate && !trip?.endDate) return <></>;
   return (
     <div className="flex items-center space-x-2 mb-1">
       <FontAwesomeIcon icon={faCalendar} size="1x" />

@@ -5,7 +5,7 @@ import { Trip } from "@/types/trip";
 import UserProfiles from "@/components/users/UsersProfiles";
 
 interface TripDestinationsProps {
-  trip: Trip;
+  trip: Trip | null;
   setIsAddingUser: (value: boolean) => void;
   isAddingUser: boolean;
 }
@@ -16,12 +16,12 @@ const TripDestinations: React.FC<TripDestinationsProps> = ({ trip, setIsAddingUs
       <div className="flex items-center space-x-2">
         <FontAwesomeIcon icon={faMapPin} size="lg" />
         <span>
-          {trip.destinations.slice(0, 3).map((city) => city.name).join(" • ")}
-          {trip.destinations.length > 3 && ` • +${trip.destinations.length - 3}`}
+          {trip?.destinations && trip?.destinations?.slice(0, 3).map((city) => city.name).join(" • ")}
+          {trip?.destinations && trip.destinations.length > 3 && ` • +${trip.destinations.length - 3}`}
         </span>
       </div>
       <div className="flex">
-        <UserProfiles users={trip.users} />
+        <UserProfiles users={trip?.users} />
         <FontAwesomeIcon
           icon={faUserPlus}
           size="lg"
