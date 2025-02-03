@@ -26,7 +26,7 @@ const TripCardSideImage = ({ trip, handleDelete }: { trip: Trip, handleDelete: (
           <Image
             src={`/api/photos?photoReference=${imageUrl}`}
             width={256}
-            height={160}
+            height={320}
             alt={trip.name}
             className="w-28 h-40 sm:w-36 sm:h-40 object-cover"
             priority
