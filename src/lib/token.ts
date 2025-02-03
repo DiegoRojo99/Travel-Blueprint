@@ -1,26 +1,10 @@
-import { admin } from "./firebaseAdmin";
-import { Request, Response, NextFunction } from 'express';
+import admin from 'firebase-admin';
 
-interface AuthenticatedRequest extends Request {
-  user?: admin.auth.DecodedIdToken;
-}
-
-async function authenticateToken(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
-  const idToken = req.headers.authorization?.split('Bearer ')[1];
-
-  if (!idToken) {
-    res.status(401).send('Unauthorized: No token provided');
-    return;
-  }
-
+export const authenticateToken = async (token: string) => {
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedToken;
-    next();
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return decodedToken;
   } catch (error) {
-    console.error('Error verifying ID token:', error);
-    res.status(401).send('Unauthorized: Invalid token');
+    throw new Error('Token verification failed');
   }
-}
-
-module.exports = authenticateToken;
+};

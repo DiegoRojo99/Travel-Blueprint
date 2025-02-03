@@ -1,7 +1,7 @@
 import { saveCitiesToFirestore } from "@/db/cities";
 import { addTrip, addUserToTrip, deleteTrip, getUserTrips } from "../../../db/trips";
 import { context } from "@/types/routes";
-import { admin } from "@/lib/firebaseAdmin";
+import { authenticateToken } from "@/lib/token";
 
 export async function GET(req: Request) {
   try {
@@ -10,8 +10,7 @@ export async function GET(req: Request) {
       return new Response(JSON.stringify({message: 'No token provided'}), { status: 401 });
     }
 
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    console.log("Decoded Token:", decodedToken);
+    const decodedToken = await authenticateToken(token);
     const trips = await getUserTrips(decodedToken.uid);
     return new Response(JSON.stringify(trips), { status: 200 });
   } 
