@@ -12,14 +12,12 @@ import { adminDB } from '@/lib/firebaseAdmin';
  */
 export const getUserTrips = async (userId: string): Promise<Trip[]> => {
   const tripsRef = adminDB.collection('Trips');
-  const tripsSnapshot = await tripsRef.get();
+  const tripsQuery = tripsRef.where('userIds', 'array-contains', userId);
+  const tripsSnapshot = await tripsQuery.get();
 
-  const trips: Trip[] = [];
-  tripsSnapshot.forEach(doc => {
+  const trips: Trip[] = tripsSnapshot.docs.map(doc => {
     const trip = doc.data() as TripDocument;
-    if (trip.users?.some((user: { uid: string }) => user.uid === userId)) {
-      trips.push({ id: doc.id, ...trip });
-    }
+    return { id: doc.id, ...trip };
   });
 
   return trips;
