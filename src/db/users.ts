@@ -20,7 +20,6 @@ export async function addUserToDB(user: AuthUser) {
     email: user.email || existingUser?.email || '',
     profilePicture: user.photoURL || existingUser?.profilePicture || '',
     providers: updatedProviders,
-    createdAt: existingUser?.createdAt || serverTimestamp(),
   };
 
   try {
