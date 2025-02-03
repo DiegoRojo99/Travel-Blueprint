@@ -33,7 +33,8 @@ const UserTrips = () => {
     }
   };
 
-  const memoizedGetToken = useCallback(() => getToken(), [getToken])
+  const memoizedGetToken = useCallback(() => getToken(), [getToken]);
+
   useEffect(() => {
     const fetchTrips = async () => {
       if (!user) {
@@ -67,6 +68,9 @@ const UserTrips = () => {
       </div>
       {loading && <Loader />}
       {!loading && (
+        !user ? (
+          <p className="text-gray-600">User is not logged in!</p>
+        ) :
         !trips.length ? (
           <p className="text-gray-600">No trips yet. Start planning!</p>
         ) : (
