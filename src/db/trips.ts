@@ -1,6 +1,6 @@
 import { Trip, TripDocument } from '@/types/trip';
 import { UserDB } from '@/types/users';
-import { db } from '@/utils/firebase';
+import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, query, getDoc, updateDoc, doc, deleteDoc, arrayUnion } from 'firebase/firestore';
 
 /**

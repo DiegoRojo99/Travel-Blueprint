@@ -1,5 +1,5 @@
 import { AuthUser, UserDB } from '@/types/users';
-import { db } from '@/utils/firebase';
+import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function addUserToDB(user: AuthUser) {

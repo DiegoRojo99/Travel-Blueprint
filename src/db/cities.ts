@@ -1,5 +1,5 @@
 import { City } from "@/types/cities";
-import { db } from "@/utils/firebase";
+import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 /**

@@ -1,5 +1,5 @@
 import { GooglePlaceDetails, GoogleSearchResult } from '@/types/search';
-import { db } from '@/utils/firebase';
+import { db } from '@/lib/firebase';
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 import fetch from "node-fetch";
 

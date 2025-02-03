@@ -1,5 +1,5 @@
-import { fetchGooglePhoto } from "@/utils/googlePhotos";
-import { getCachedPhoto, cachePhoto } from "@/utils/photoCache";
+import { fetchGooglePhoto } from "@/lib/googlePhotos";
+import { getCachedPhoto, cachePhoto } from "@/lib/photoCache";
 
 export async function GET(req) {
   const photoReference = new URL(req.url).searchParams.get("photoReference");
