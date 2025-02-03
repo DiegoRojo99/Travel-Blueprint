@@ -1,6 +1,6 @@
 import { AuthUser, UserDB } from '@/types/users';
-import { db } from '@/utils/firebase';
-import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function addUserToDB(user: AuthUser) {
   if (!user?.uid) return;
@@ -20,7 +20,6 @@ export async function addUserToDB(user: AuthUser) {
     email: user.email || existingUser?.email || '',
     profilePicture: user.photoURL || existingUser?.profilePicture || '',
     providers: updatedProviders,
-    createdAt: existingUser?.createdAt || serverTimestamp(),
   };
 
   try {

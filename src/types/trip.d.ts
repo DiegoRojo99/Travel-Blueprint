@@ -18,6 +18,7 @@ interface TripDocument {
   stops: StopWithDetails[] | undefined;
   places: GoogleSearchResult[] | undefined;
   users: TripUser[];
+  userIds: string[];
 }
 
 interface TripUser {
@@ -37,6 +38,7 @@ interface Trip {
   stops?: StopWithDetails[];
   places?: GoogleSearchResult[];
   users: TripUser[];
+  userIds: string[];
 }
 
 

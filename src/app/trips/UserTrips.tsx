@@ -1,19 +1,19 @@
-import { getAuth } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TripCard from "./TripCardSideImage";
 import { Trip } from "@/types/trip";
 import Loader from "@/components/loaders/Loader";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { sendRequestWithToken } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
 
 const UserTrips = () => {
-  const auth = getAuth();
+  const {user, getToken} = useAuth();
   const [loading, setLoading] = useState(true);
   const [trips, setTrips] = useState<Trip[]>([]);
 
   const deleteTrip = async (tripId: string) => {
-    const user = auth.currentUser;
     if (user) {
       const deleteCheck = confirm("Are you sure you want to delete this trip?");
       if(!deleteCheck) return;
@@ -33,22 +33,30 @@ const UserTrips = () => {
     }
   };
 
+  const memoizedGetToken = useCallback(() => getToken(), [getToken]);
+
   useEffect(() => {
     const fetchTrips = async () => {
-      const user = auth.currentUser;
+      if (!user) {
+        console.log('User not authenticated');
+        setLoading(false);
+        return;
+      }
 
-      if (user) {
-        const response = await fetch('/api/trips', {
-          headers: { 'x-user-id': user.uid },
+      try {
+        const data = await sendRequestWithToken('/api/trips', memoizedGetToken, {
+          method: 'GET',
         });
-        const data = await response.json();
         setTrips(data);
+      } catch (error) {
+        console.error('Error fetching trips:', error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchTrips();
-  }, [auth.currentUser]);
+  }, [user]);
 
   return (
     <div className="container mx-auto">
@@ -60,6 +68,9 @@ const UserTrips = () => {
       </div>
       {loading && <Loader />}
       {!loading && (
+        !user ? (
+          <p className="text-gray-600">User is not logged in!</p>
+        ) :
         !trips.length ? (
           <p className="text-gray-600">No trips yet. Start planning!</p>
         ) : (

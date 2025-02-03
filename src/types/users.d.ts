@@ -4,7 +4,6 @@ export type UserDB = {
   email: string;
   profilePicture: string;
   providers: string[];
-  createdAt: FirebaseFirestore.Timestamp;
 };
 
 export type AuthUser = {
