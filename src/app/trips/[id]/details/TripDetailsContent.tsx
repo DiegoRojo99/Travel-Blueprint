@@ -12,6 +12,7 @@ import { UserDB } from '@/types/users';
 import UserProfiles from '@/components/users/UsersProfiles';
 import { useAuth } from '@/hooks/useAuth';
 import { sendRequestWithToken } from '@/lib/api';
+import DateSelector from './components/DateSelector';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -154,31 +155,13 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           </div>
         </div>
 
-        {/* Dates */}
-        <div className="flex items-center space-x-2 mb-1">
-          <FontAwesomeIcon icon={faCalendar} size="1x" />
-          {isEditing ? (
-            <div>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => handleDateChange('start', e.target.value)}
-                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-              />
-              <span className="mx-2">-</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => handleDateChange('end', e.target.value)}
-                className="bg-transparent border-b-2 border-white text-1x sm:text-lg"
-              />
-            </div>
-          ) : (
-            <span className="text-1x sm:text-lg">
-              {format(trip?.startDate, "MMM d")} - {format(trip?.endDate, "MMM d")}
-            </span>
-          )}
-        </div>
+        <DateSelector
+          startDate={startDate}
+          endDate={endDate}
+          isEditing={isEditing}
+          handleDateChange={handleDateChange}
+          trip={trip}
+        />
 
         {/* Destinations */}
         <div className="flex justify-between">
