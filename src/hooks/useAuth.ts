@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { auth, googleProvider } from '@/lib/firebase';
-import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, getIdToken } from 'firebase/auth';
 import { addUserToDB } from '@/db/users';
 import { AuthUser } from '@/types/users';
 import { FirebaseError } from 'firebase/app';
@@ -31,6 +31,19 @@ export function useAuth() {
 
     return () => unsubscribe();
   }, []);
+
+  async function getToken(){
+    if (user) {
+      try {
+        const idToken = await getIdToken(user);
+        return idToken;
+      } catch (error) {
+        console.error('Error getting ID token:', error);
+        return null;
+      }
+    }
+    return null;
+  };
 
   async function login(email: string, password: string) {
     try {
@@ -99,5 +112,5 @@ export function useAuth() {
     setUser(null);
   }
 
-  return { user, loading, error, login, signup, loginWithGoogle, logout };
+  return { user, loading, error, login, signup, loginWithGoogle, logout, getToken };
 }

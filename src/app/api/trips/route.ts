@@ -1,18 +1,21 @@
 import { saveCitiesToFirestore } from "@/db/cities";
 import { addTrip, addUserToTrip, deleteTrip, getUserTrips } from "../../../db/trips";
 import { context } from "@/types/routes";
+import { admin } from "@/lib/firebaseAdmin";
 
 export async function GET(req: Request) {
-  const userId = req.headers.get('x-user-id');
-
-  if (!userId) {
-    return new Response('Unauthorized: Missing user ID', { status: 401 });
-  }
-
   try {
-    const trips = await getUserTrips(userId);
+    const token = req.headers.get('authorization')?.split('Bearer ')[1];
+    if (!token) {      
+      return new Response(JSON.stringify({message: 'No token provided'}), { status: 401 });
+    }
+
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    console.log("Decoded Token:", decodedToken);
+    const trips = await getUserTrips(decodedToken.uid);
     return new Response(JSON.stringify(trips), { status: 200 });
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error fetching trips', error);
     return new Response('Error fetching trips', { status: 500 });
   }
