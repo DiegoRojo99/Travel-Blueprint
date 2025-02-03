@@ -12,6 +12,7 @@ import { sendRequestWithToken } from '@/lib/api';
 import DateSelector from './components/DateSelector';
 import TripDestinations from './components/TripDestinations';
 import AddUserModal from './components/AddUserModal';
+import TripOverlay from './components/TripOverlay';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -142,25 +143,12 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
     <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
       <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
         {/* Trip Details */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={trip.name}
-                  onChange={(e) => setTrip({ ...trip, name: e.target.value })}
-                  className="bg-transparent border-b-2 border-white text-xl sm:text-3xl"
-                />
-              ) : (
-                trip.name
-              )}
-            </h1>
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faPencil} size="lg" className="cursor-pointer" onClick={handleEditToggle} />
-          </div>
-        </div>
+        <TripOverlay
+          isEditing={isEditing}
+          trip={trip}
+          setTrip={setTrip}
+          handleEditToggle={handleEditToggle}
+        />
 
         <DateSelector
           startDate={startDate}
