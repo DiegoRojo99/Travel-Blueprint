@@ -61,16 +61,16 @@ export const getTripById = async (id: string): Promise<Trip> => {
   if(!id){
     throw new Error("Trip ID not provided");
   }
-  const tripRef = doc(db, 'Trips', id);
-  const tripSnapshot = await getDoc(tripRef);
+  const tripsRef = adminDB.collection('Trips');
+  const tripsQuery = tripsRef.where('id', '==', id);
+  const tripSnapshot = await tripsQuery.get();
 
-  if (tripSnapshot.exists()) {
-    const data = tripSnapshot.data() as TripDocument;
-    return { id: id, ...data };
-  } 
-  else {
+  if (tripSnapshot.empty) {
     throw new Error("Trip not found");
-  }
+  } 
+  console.log("Trip Snap:", tripSnapshot);
+  const data = tripSnapshot.docs[0].data() as unknown as TripDocument;
+  return { id: id, ...data };
 };
 
 /**

@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
@@ -10,9 +10,12 @@ import { City } from '@/types/cities';
 import { format } from "date-fns";
 import { UserDB } from '@/types/users';
 import UserProfiles from '@/components/users/UsersProfiles';
+import { useAuth } from '@/hooks/useAuth';
+import { sendRequestWithToken } from '@/lib/api';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
+  const {user, getToken} = useAuth();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [startDate, setStartDate] = useState<string>('');
@@ -21,15 +24,21 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedUser, setSelectedUser] = useState<null | UserDB>(null);
-
+  
+  const memoizedGetToken = useCallback(() => getToken(), [getToken]);
   useEffect(() => {
     const fetchTrip = async () => {
+      
+      if (!user) {
+        console.log('User not authenticated');
+        return;
+      }
+
       try {
-        const res = await fetch(`/api/trips/${id}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch trip');
-        }
-        const data = await res.json();
+        const data = await sendRequestWithToken(`/api/trips/${id}`, memoizedGetToken, {
+          method: 'GET',
+        });
+        
         setTrip(data);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
@@ -39,7 +48,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
     };
 
     fetchTrip();
-  }, [id]);
+  }, [id, user]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
 

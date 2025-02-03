@@ -1,16 +1,26 @@
 import { getTripById, updateTrip, deleteTrip } from "@/db/trips";
+import { authenticateToken } from "@/lib/token";
+import { context } from "@/types/routes";
 
-export async function GET(req, context) {
-  const { params } = context;
-  const { id } = await params;
+export async function GET(req: Request, context: context) {
+  const { id } = await context.params;
 
   if (!id) {
     return new Response('Bad Request: Missing trip ID', { status: 400 });
   }
 
   try {
-    const trip = await getTripById(id);
+    const token = req.headers.get('authorization')?.split('Bearer ')[1];
+    if (!token) {      
+      return new Response(JSON.stringify({message: 'No token provided'}), { status: 401 });
+    }
 
+    const decodedToken = await authenticateToken(token);
+    if (decodedToken instanceof Error) {
+      return new Response(JSON.stringify({message: 'Invalid token'}), { status: 401 });
+    }
+
+    const trip = await getTripById(id);
     if (!trip) {
       return new Response('Not Found: Trip not found', { status: 404 });
     }
@@ -22,7 +32,7 @@ export async function GET(req, context) {
   }
 }
 
-export async function PUT(req, context) {
+export async function PUT(req: Request, context: context) {
   const { params } = context;
   const { id } = await params;
   const tripData = await req.json();
@@ -44,7 +54,7 @@ export async function PUT(req, context) {
   }
 }
 
-export async function DELETE(req, context) { 
+export async function DELETE(req: Request, context: context) { 
   const { params } = context;
   const { id } = await params;
 
