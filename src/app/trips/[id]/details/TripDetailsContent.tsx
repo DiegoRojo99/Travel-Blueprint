@@ -1,20 +1,16 @@
-import { use, useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
-import Itinerary from '@/components/itinerary/Itinerary';
-import { GoogleSearchResult, StopWithDetails } from '@/types/search';
-import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
 import { UserDB } from '@/types/users';
 import { useAuth } from '@/hooks/useAuth';
 import { sendRequestWithToken } from '@/lib/api';
-import DateSelector from './components/DateSelector';
-import TripDestinations from './components/TripDestinations';
-import AddUserModal from './components/AddUserModal';
-import TripName from './components/TripName';
+import PlaceSection from '@/components/places/PlaceSection';
+import Itinerary from '@/components/itinerary/Itinerary';
+import TripOverlay from './components/TripOverlay';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
-  const {user, getToken} = useAuth();
+  const { user, getToken } = useAuth();
   const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,30 +22,27 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
   const [selectedUser, setSelectedUser] = useState<null | UserDB>(null);
   
   const memoizedGetToken = useCallback(() => getToken(), [getToken]);
+
   useEffect(() => {
     const fetchTrip = async () => {
-      if (!user) {
-        return;
-      }
+      if (!user) return;
 
       try {
         const data = await sendRequestWithToken(`/api/trips/${id}`, memoizedGetToken, {
           method: 'GET',
         });
-        
+
         setTrip(data);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
-      }
-      catch (error) {
+      } catch (error) {
         console.error('Error fetching trip:', error);
-      } 
-      finally {
+      } finally {
         setLoading(false);
       }
     };
 
-    if(loading) fetchTrip();
+    if (loading) fetchTrip();
   }, [id, user, loading]);
 
   const handleEditToggle = () => setIsEditing(!isEditing);
@@ -76,12 +69,10 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       }
 
       setIsEditing(false);
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error updating trip:', error);
       alert('Failed to update the trip. Please try again.');
-    }
-    finally{      
+    } finally {
       setLoading(true);
     }
   };
@@ -122,75 +113,46 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       if (!response.ok) {
         throw new Error('Failed to add user to the trip');
       }
-        
+
       setIsAddingUser(false);
       alert('User added successfully!');
-    } 
-    catch (error) {
+    } catch (error) {
       console.error('Error adding user to trip:', error);
       alert('Failed to add user to the trip.');
-    }
-    finally{      
+    } finally {
       setLoading(false);
     }
   };
 
   if (loading) return <Loader />;
-  if(!trip) return <></>;
+  if (!trip) return <></>;
+
   return (
     <div className="relative p-2 sm:p-4 bg-cover bg-center bg-gray-800 h-full">
-      <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
-        <TripName
-          isEditing={isEditing}
-          trip={trip}
-          setTrip={setTrip}
-          handleEditToggle={handleEditToggle}
-        />
-
-        <DateSelector
-          startDate={startDate}
-          endDate={endDate}
-          isEditing={isEditing}
-          handleDateChange={handleDateChange}
-          trip={trip}
-        />
-
-        <TripDestinations 
-          trip={trip} 
-          setIsAddingUser={setIsAddingUser} 
-          isAddingUser={isAddingUser} 
-        />
-        
-        <AddUserModal
-          isAddingUser={isAddingUser}
-          userSearchQuery={userSearchQuery}
-          setUserSearchQuery={setUserSearchQuery}
-          handleUserSearch={handleUserSearch}
-          searchResults={searchResults}
-          setSelectedUser={setSelectedUser}
-          selectedUser={selectedUser}
-          handleAddUser={handleAddUser}
-        />
-
-        {/* Edit Buttons */}
-        {isEditing && (
-          <div className="mt-6">
-            <button onClick={handleSaveChanges} className="bg-blue-500 text-white px-6 py-2 rounded-md">
-              Save Changes
-            </button>
-            <button onClick={handleEditToggle} className="bg-gray-500 text-white px-6 py-2 rounded-md ml-4">
-              Cancel
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Components */}
+      <TripOverlay
+        isEditing={isEditing}
+        trip={trip}
+        setTrip={setTrip}
+        handleEditToggle={handleEditToggle}
+        startDate={startDate}
+        endDate={endDate}
+        handleDateChange={handleDateChange}
+        setIsAddingUser={setIsAddingUser}
+        isAddingUser={isAddingUser}
+        userSearchQuery={userSearchQuery}
+        setUserSearchQuery={setUserSearchQuery}
+        handleUserSearch={handleUserSearch}
+        searchResults={searchResults}
+        setSelectedUser={setSelectedUser}
+        selectedUser={selectedUser}
+        handleAddUser={handleAddUser}
+        handleSaveChanges={handleSaveChanges}
+      />
       <PlaceSection
         trip={trip}
-        onPlaceAdded={(selectedPlace: GoogleSearchResult) =>
+        onPlaceAdded={(selectedPlace: any) =>
           setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
-        onStopAdded={(selectedStop: StopWithDetails) =>
+        onStopAdded={(selectedStop: any) =>
           setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
       />
       <Itinerary trip={trip} />

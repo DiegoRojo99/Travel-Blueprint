@@ -1,0 +1,96 @@
+import React from 'react';
+import { Trip } from '@/types/trip';
+import TripName from './TripName';
+import DateSelector from './DateSelector';
+import TripDestinations from './TripDestinations';
+import AddUserModal from './AddUserModal';
+
+interface TripOverlayProps {
+  isEditing: boolean;
+  trip: Trip;
+  setTrip: React.Dispatch<React.SetStateAction<Trip | null>>;
+  handleEditToggle: () => void;
+  startDate: string;
+  endDate: string;
+  handleDateChange: (dateType: 'start' | 'end', date: string) => void;
+  setIsAddingUser: React.Dispatch<React.SetStateAction<boolean>>;
+  isAddingUser: boolean;
+  userSearchQuery: string;
+  setUserSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  handleUserSearch: () => void;
+  searchResults: any[];
+  setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
+  selectedUser: any;
+  handleAddUser: () => void;
+  handleSaveChanges: () => void;
+}
+
+const TripOverlay = ({
+  isEditing,
+  trip,
+  setTrip,
+  handleEditToggle,
+  startDate,
+  endDate,
+  handleDateChange,
+  setIsAddingUser,
+  isAddingUser,
+  userSearchQuery,
+  setUserSearchQuery,
+  handleUserSearch,
+  searchResults,
+  setSelectedUser,
+  selectedUser,
+  handleAddUser,
+  handleSaveChanges
+}: TripOverlayProps) => {
+  return (
+    <div className="relative z-2 text-black bg-white p-4 sm:p-6 rounded-lg">
+      <TripName
+        isEditing={isEditing}
+        trip={trip}
+        setTrip={setTrip}
+        handleEditToggle={handleEditToggle}
+      />
+
+      <DateSelector
+        startDate={startDate}
+        endDate={endDate}
+        isEditing={isEditing}
+        handleDateChange={handleDateChange}
+        trip={trip}
+      />
+
+      <TripDestinations 
+        trip={trip} 
+        setIsAddingUser={setIsAddingUser} 
+        isAddingUser={isAddingUser} 
+      />
+
+      <AddUserModal
+        isAddingUser={isAddingUser}
+        userSearchQuery={userSearchQuery}
+        setUserSearchQuery={setUserSearchQuery}
+        handleUserSearch={handleUserSearch}
+        searchResults={searchResults}
+        setSelectedUser={setSelectedUser}
+        selectedUser={selectedUser}
+        handleAddUser={handleAddUser}
+      />
+
+      {/* Edit Buttons */}
+      {isEditing && (
+        <div className="mt-6">
+          <button onClick={handleSaveChanges} className="bg-blue-500 text-white px-6 py-2 rounded-md">
+            Save Changes
+          </button>
+          <button onClick={handleEditToggle} className="bg-gray-500 text-white px-6 py-2 rounded-md ml-4">
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TripOverlay;
