@@ -5,6 +5,6 @@ export const authenticateToken = async (token: string) => {
     const decodedToken = await admin.auth().verifyIdToken(token);
     return decodedToken;
   } catch (error) {
-    throw new Error('Token verification failed');
+    throw new Error(`Token verification failed. ${error}`);
   }
 };
