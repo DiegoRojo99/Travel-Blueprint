@@ -1,18 +1,16 @@
 import { use, useCallback, useEffect, useState } from 'react';
 import { Trip } from '@/types/trip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faMapPin, faPencil, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import Itinerary from '@/components/itinerary/Itinerary';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 import PlaceSection from '@/components/places/PlaceSection';
 import Loader from '@/components/loaders/Loader';
-import { City } from '@/types/cities';
-import { format } from "date-fns";
 import { UserDB } from '@/types/users';
-import UserProfiles from '@/components/users/UsersProfiles';
 import { useAuth } from '@/hooks/useAuth';
 import { sendRequestWithToken } from '@/lib/api';
 import DateSelector from './components/DateSelector';
+import TripDestinations from './components/TripDestinations';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -163,25 +161,11 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           trip={trip}
         />
 
-        {/* Destinations */}
-        <div className="flex justify-between">
-          <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faMapPin} size="lg" />
-            <span>
-              {trip?.destinations.slice(0, 3).map((city: City) => city.name).join(" • ")}
-              {trip?.destinations?.length > 3 && ` • +${trip.destinations.length - 3}`}
-            </span>
-          </div>
-          <div className='flex'>
-            <UserProfiles users={trip.users} />
-            <FontAwesomeIcon
-              icon={faUserPlus}
-              size="lg"
-              className="cursor-pointer my-auto ml-2"
-              onClick={() => setIsAddingUser(!isAddingUser)}
-            />
-          </div>
-        </div>
+        <TripDestinations 
+          trip={trip} 
+          setIsAddingUser={setIsAddingUser} 
+          isAddingUser={isAddingUser} 
+        />
 
         {/* Add User Modal */}
         {isAddingUser && (
