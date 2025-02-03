@@ -4,6 +4,7 @@ import TripName from './TripName';
 import DateSelector from './DateSelector';
 import TripDestinations from './TripDestinations';
 import AddUserModal from './AddUserModal';
+import { UserDB } from '@/types/users';
 
 interface TripOverlayProps {
   isEditing: boolean;
@@ -18,9 +19,9 @@ interface TripOverlayProps {
   userSearchQuery: string;
   setUserSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   handleUserSearch: () => void;
-  searchResults: any[];
-  setSelectedUser: React.Dispatch<React.SetStateAction<any>>;
-  selectedUser: any;
+  searchResults: UserDB[];
+  setSelectedUser: (user: UserDB) => void;
+  selectedUser: UserDB | null;
   handleAddUser: () => void;
   handleSaveChanges: () => void;
 }

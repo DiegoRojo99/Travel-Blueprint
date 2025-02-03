@@ -8,6 +8,7 @@ import PlaceSection from '@/components/places/PlaceSection';
 import Itinerary from '@/components/itinerary/Itinerary';
 import TripOverlay from './components/TripOverlay';
 import Image from 'next/image';
+import { GoogleSearchResult, StopWithDetails } from '@/types/search';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -169,9 +170,9 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
       <div className='p-2 sm:p-4 mt-6'>
         <PlaceSection
           trip={trip}
-          onPlaceAdded={(selectedPlace: any) =>
+          onPlaceAdded={(selectedPlace: GoogleSearchResult) =>
             setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
-          onStopAdded={(selectedStop: any) =>
+          onStopAdded={(selectedStop: StopWithDetails) =>
             setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
         />
         <Itinerary trip={trip} />
