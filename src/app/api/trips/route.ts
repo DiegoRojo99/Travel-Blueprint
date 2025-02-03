@@ -11,6 +11,10 @@ export async function GET(req: Request) {
     }
 
     const decodedToken = await authenticateToken(token);
+    if (decodedToken instanceof Error) {
+      return new Response(JSON.stringify({message: 'Invalid token'}), { status: 401 });
+    }
+    
     const trips = await getUserTrips(decodedToken.uid);
     return new Response(JSON.stringify(trips), { status: 200 });
   } 
