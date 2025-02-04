@@ -1,6 +1,5 @@
 import { StopWithDetails } from '@/types/search';
-import { db } from '@/lib/firebase';
-import { updateDoc, doc, getDoc } from 'firebase/firestore';
+import { adminDB } from '@/lib/firebaseAdmin';
 
 /**
  * Updates the stops attribute of a trip object.
@@ -9,18 +8,19 @@ import { updateDoc, doc, getDoc } from 'firebase/firestore';
  * @returns {Promise<boolean>} A boolean indicating the result of the operation.
  */
 export async function updateTripStops(tripId: string, stops: StopWithDetails[]): Promise<boolean> {
-  const tripRef = doc(db, 'Trips', tripId);
-  
+  const tripRef = adminDB.collection('Trips').doc(tripId);
+
   try {
-    const tripDoc = await getDoc(tripRef);
-    if (!tripDoc.exists()) {
+    const tripDoc = await tripRef.get();
+    if (!tripDoc.exists) {
       throw new Error("Trip not found");
     }
 
-    await updateDoc(tripRef, { stops: stops });
+    await tripRef.update({ stops: stops });
     return true;
   } catch (error) {
-    console.error("Error adding stop", error);
+    console.error("Error updating stops", error);
     throw error;
   }
 }
+
