@@ -3,7 +3,6 @@ import { Trip } from '@/types/trip';
 import TripName from './TripName';
 import DateSelector from './DateSelector';
 import TripDestinations from './TripDestinations';
-import { UserDB } from '@/types/users';
 
 interface TripOverlayProps {
   isEditing: boolean;
