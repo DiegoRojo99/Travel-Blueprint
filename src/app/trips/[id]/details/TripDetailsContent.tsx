@@ -9,6 +9,7 @@ import Itinerary from '@/components/itinerary/Itinerary';
 import TripOverlay from './components/TripOverlay';
 import Image from 'next/image';
 import { GoogleSearchResult, StopWithDetails } from '@/types/search';
+import AddUserModal from './components/AddUserModal';
 
 const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
@@ -156,16 +157,20 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
           handleDateChange={handleDateChange}
           setIsAddingUser={setIsAddingUser}
           isAddingUser={isAddingUser}
-          userSearchQuery={userSearchQuery}
-          setUserSearchQuery={setUserSearchQuery}
-          handleUserSearch={handleUserSearch}
-          searchResults={searchResults}
-          setSelectedUser={setSelectedUser}
-          selectedUser={selectedUser}
-          handleAddUser={handleAddUser}
           handleSaveChanges={handleSaveChanges}
         />
       </div>
+      
+      {isAddingUser && <AddUserModal
+        userSearchQuery={userSearchQuery}
+        setUserSearchQuery={setUserSearchQuery}
+        handleUserSearch={handleUserSearch}
+        searchResults={searchResults}
+        setSelectedUser={setSelectedUser}
+        selectedUser={selectedUser}
+        handleAddUser={handleAddUser}
+        closeModal={() => setIsAddingUser(false)}
+      />}
 
       <div className='p-2 sm:p-4 mt-6'>
         <PlaceSection

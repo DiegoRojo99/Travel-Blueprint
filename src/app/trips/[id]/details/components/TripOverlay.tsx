@@ -3,7 +3,6 @@ import { Trip } from '@/types/trip';
 import TripName from './TripName';
 import DateSelector from './DateSelector';
 import TripDestinations from './TripDestinations';
-import AddUserModal from './AddUserModal';
 import { UserDB } from '@/types/users';
 
 interface TripOverlayProps {
@@ -16,13 +15,6 @@ interface TripOverlayProps {
   handleDateChange: (dateType: 'start' | 'end', date: string) => void;
   setIsAddingUser: React.Dispatch<React.SetStateAction<boolean>>;
   isAddingUser: boolean;
-  userSearchQuery: string;
-  setUserSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  handleUserSearch: () => void;
-  searchResults: UserDB[];
-  setSelectedUser: (user: UserDB) => void;
-  selectedUser: UserDB | null;
-  handleAddUser: () => void;
   handleSaveChanges: () => void;
 }
 
@@ -36,13 +28,6 @@ const TripOverlay = ({
   handleDateChange,
   setIsAddingUser,
   isAddingUser,
-  userSearchQuery,
-  setUserSearchQuery,
-  handleUserSearch,
-  searchResults,
-  setSelectedUser,
-  selectedUser,
-  handleAddUser,
   handleSaveChanges
 }: TripOverlayProps) => {
   return (
@@ -67,17 +52,6 @@ const TripOverlay = ({
         trip={trip} 
         setIsAddingUser={setIsAddingUser} 
         isAddingUser={isAddingUser} 
-      />
-
-      <AddUserModal
-        isAddingUser={isAddingUser}
-        userSearchQuery={userSearchQuery}
-        setUserSearchQuery={setUserSearchQuery}
-        handleUserSearch={handleUserSearch}
-        searchResults={searchResults}
-        setSelectedUser={setSelectedUser}
-        selectedUser={selectedUser}
-        handleAddUser={handleAddUser}
       />
 
       {/* Edit Buttons */}
