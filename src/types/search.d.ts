@@ -52,7 +52,7 @@ interface GooglePlaceDetails {
   user_ratings_total: number;
 }
 
-type StopWithDetails = GoogleSearchResult & { date: string; notes: string };
+type StopWithDetails = GoogleSearchResult & { id: string , date: string; notes: string };
 
 export {
   GoogleSearchResult,
