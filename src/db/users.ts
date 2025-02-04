@@ -43,12 +43,13 @@ export async function getUser(uid: string) {
 export async function getUsersByEmailOrName(querySearch: string) {
   const usersRef = collection(db, 'Users');
   let users: UserDB[] = [];
+  const lowercaseQuery = querySearch.toLowerCase();
 
-  const emailQuery = query(usersRef, where('email', '==', querySearch));
+  const emailQuery = query(usersRef, where('email', '==', lowercaseQuery));
   const emailSnapshot = await getDocs(emailQuery);
   users = users.concat(emailSnapshot.docs.map(doc => doc.data() as UserDB ));
 
-  const nameQuery = query(usersRef, where('name', '==', querySearch));
+  const nameQuery = query(usersRef, where('name', '==', lowercaseQuery));
   const nameSnapshot = await getDocs(nameQuery);
   users = users.concat(nameSnapshot.docs.map(doc => doc.data() as UserDB ));
 

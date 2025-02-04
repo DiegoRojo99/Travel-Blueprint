@@ -26,7 +26,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
 }) => {
   return (
     <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center z-20" onClick={closeModal}>
-      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-92 sm:w-96 relative z-30" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white text-black p-4 sm:p-6 rounded-lg shadow-lg w-92 sm:w-[32rem] relative z-30" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center pb-4 mb-2">
           <h3 className="text-lg font-bold">Add User to Trip</h3>
           <FontAwesomeIcon icon={faX} size="lg" onClick={closeModal} />

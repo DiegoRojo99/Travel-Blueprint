@@ -23,7 +23,7 @@ export const PlaceModal: React.FC<PlaceModalProps> = ({ trip, place, onClose, on
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
-      <div className="bg-white rounded-lg shadow-lg w-96 p-6">
+      <div className="bg-white rounded-lg shadow-lg w-92 sm:w-[32rem] p-6">
         <h2 className="text-lg font-bold mb-4">Save Place</h2>
         <p className="text-gray-700 mb-2">{place.name}</p>
         <p className="text-gray-500 mb-4">{place.formatted_address}</p>
