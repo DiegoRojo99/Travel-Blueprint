@@ -1,10 +1,10 @@
 import { updateTripStops } from "@/db/stops";
 import { getTripById } from "@/db/trips";
+import { context } from "@/types/routes";
 import crypto from 'crypto';
 
-export async function GET(req, context) {
-  const { params } = context;
-  const { id } = await params;
+export async function GET(req: Request, context: context) {
+  const { id } = await context.params;
 
   if (!id) {
     return new Response('Bad Request: Missing trip ID', { status: 400 });
@@ -23,9 +23,8 @@ export async function GET(req, context) {
   }
 }
 
-export async function POST(req, context) {
-  const { params } = context;
-  const { id } = await params;
+export async function POST(req: Request, context: context) {
+  const { id } = await context.params;
 
   let stopData;
   try {
@@ -61,7 +60,7 @@ export async function POST(req, context) {
     trip.stops = trip.stops || [];
     trip.stops.push(newStop);
 
-    let updateResult = await updateTripStops(id, trip.stops);
+    const updateResult = await updateTripStops(id, trip.stops);
     if (!updateResult) {
       return new Response('Error adding stop', { status: 500 });
     }
@@ -73,8 +72,8 @@ export async function POST(req, context) {
   }
 }
 
-export async function PUT(req, { params }) {
-  const { id, stopId } = params;
+export async function PUT(req: Request, context: context) {
+  const { id, stopId } = await context.params;
   const stopData = await req.json();
 
   if (!id || !stopId) {
@@ -92,18 +91,21 @@ export async function PUT(req, { params }) {
       return new Response('Not Found: Stop not found', { status: 404 });
     }
 
-    trip.stops[stopIndex] = { ...trip.stops[stopIndex], ...stopData };
-    await updateTripStops(id, trip.stops);
-
-    return new Response(JSON.stringify(trip.stops[stopIndex]), { status: 200 });
+    if (trip.stops) {
+      trip.stops[stopIndex] = { ...trip.stops[stopIndex], ...stopData };
+      await updateTripStops(id, trip.stops);
+      return new Response(JSON.stringify(trip.stops?.[stopIndex]), { status: 200 });
+    }
+    
+    return new Response('Trip has no stops', { status: 500 });
   } catch (error) {
     console.error('Error updating stop', error);
     return new Response('Error updating stop', { status: 500 });
   }
 }
 
-export async function DELETE(req, { params }) {
-  const { id, stopId } = params;
+export async function DELETE(req: Request, context: context) {
+  const { id, stopId } = await context.params;
 
   if (!id || !stopId) {
     return new Response('Bad Request: Missing required IDs', { status: 400 });
