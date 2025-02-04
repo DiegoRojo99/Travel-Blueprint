@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function UserProfiles({ users }: {users: TripUser[] | undefined}){
   return (
-    <div className="flex ml-2 align-center">
+    <div className="flex align-center">
       {users?.slice(0, 3).map((user, index) => (
         <Image
           key={index}
