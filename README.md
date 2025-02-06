@@ -9,9 +9,7 @@ Travel Blueprint is a modern web application designed to simplify your trip plan
 - **User Authentication**:  
   Secure sign-up and login functionality powered by Firebase Authentication. Users can log in using Google or email authentication.  
 - **Create and Manage Trips**:  
-  Add trips with a name, start and end dates, and destinations.  
-- **Update Trips**:  
-  Edit existing trips to adjust travel plans seamlessly.  
+  Add trips with a name, start and end dates, and destinations.
 - **Google Places API Integration**:  
   Seamless integration with Google Places API for searching both destinations and stops inside the trips.  
 - **Detailed Itinerary**:  
@@ -37,14 +35,18 @@ Travel Blueprint is a modern web application designed to simplify your trip plan
 
 ### Long-Term Goals
 - **Real-Time Flight Prices**:  
-  Integrate live flight price data for destinations.  
+  Integrate live flight price data for destinations.
 - **User Preferences**:  
   Save user travel interests and favorite destinations for a personalized experience.  
 - **Collaborative Planning**:  
   Allow users to share trips and itineraries with friends and family.  
 - **Weather Updates**:  
   Show real-time weather conditions for destinations.  
-
-## 🌍 Vision Statement  
-
-**Travel Blueprint** aims to become the go-to tool for travelers, helping them organize, plan, and optimize their trips with ease, convenience, and modern technology.
+- **Drag-and-Drop Itinerary Planning**:  
+  Allow users to reorder their itinerary items using a drag-and-drop interface.
+- **Interactive Map with Route Visualization**:  
+  Integrate an interactive map (Google Maps API) to visualize destinations, stops, and travel routes.
+- **Trip Calendar Integration**:  
+  Sync trips and itineraries with Google Calendar or export as .ics files. 
+- **Budget & Expense Tracking**:  
+  Add a feature to log trip expenses, categorize them, and set budgets.
