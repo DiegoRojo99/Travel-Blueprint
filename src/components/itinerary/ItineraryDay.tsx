@@ -29,17 +29,19 @@ export default function ItineraryDay({ date, stops }: { date: string; stops: Sto
       </div>
       
       <SortableContext items={stops.map((stop) => stop.id)} strategy={verticalListSortingStrategy}>
-      {isCollapsed ? (
-        <div className="text-sm text-gray-500">{stopNames}</div>
-      ) : (
-        <div className="my-2 flex flex-wrap -mx-2">
-          {stops.map((stop) => (
-            <div key={`itinerary-${date}-stop-${stop.id}`} className="w-full sm:w-1/2 px-2 mb-4">
-              <PlaceItem place={stop} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div className={isCollapsed ? "min-h-10 w-fit" : ""}>
+        {isCollapsed ? (
+          <div className="text-sm text-gray-500">{stopNames}</div>
+        ) : (
+          <div className="my-2 flex flex-wrap -mx-2">
+            {stops.map((stop) => (
+              <div key={`itinerary-${date}-stop-${stop.id}`} className="w-full sm:w-1/2 px-2 mb-4">
+                <PlaceItem place={stop} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       </SortableContext>
     </div>
   );

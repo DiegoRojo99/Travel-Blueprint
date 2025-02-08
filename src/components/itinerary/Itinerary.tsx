@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { eachDayOfInterval } from "date-fns/fp";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import ItineraryDay from "./ItineraryDay";
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { StopWithDetails } from "@/types/search";
 
@@ -32,7 +32,12 @@ export default function Itinerary({ trip }: { trip: Trip }) {
     if (!over) return;
 
     const activeStop = stops.find((stop) => stop.id === active.id);
-    const date = over.id;
+    let date = over.id;
+    if (isNaN(Date.parse(date))) {
+      const endStop = stops.find((stop) => stop.id === over.id);
+      if(!endStop) return;
+      date = endStop.date;
+    }
 
     if (activeStop) {
       // If dropped in a different day
@@ -70,7 +75,7 @@ export default function Itinerary({ trip }: { trip: Trip }) {
   );
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
       <div className="itinerary mb-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Itinerary</h2>
