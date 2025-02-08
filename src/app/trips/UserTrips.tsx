@@ -36,7 +36,34 @@ const UserTrips = () => {
   const memoizedGetToken = useCallback(() => getToken(), [getToken]);
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const fetchTrips = async () => {
+        console.log('User:', user);
+        if (!user) {
+          console.log('User not authenticated');
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const data = await sendRequestWithToken('/api/trips', memoizedGetToken, {
+            method: 'GET',
+          });
+          setTrips(data);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching trips:', error);
+        }
+      };
+
+      fetchTrips();
+    }, 1000); // 1 second delay
+
+    return () => clearTimeout(timeoutId);
+  }, [user]);
+  useEffect(() => {
     const fetchTrips = async () => {
+      console.log('User:', user);
       if (!user) {
         console.log('User not authenticated');
         setLoading(false);
@@ -48,12 +75,22 @@ const UserTrips = () => {
           method: 'GET',
         });
         setTrips(data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching trips:', error);
-      } finally {
-        setLoading(false);
       }
     };
+
+    if(user){
+      fetchTrips();
+    }
+    else {
+      const timeoutId = setTimeout(() => {
+
+        fetchTrips();
+      }, 800);
+      return () => clearTimeout(timeoutId);
+    }
 
     fetchTrips();
   }, [user]);
