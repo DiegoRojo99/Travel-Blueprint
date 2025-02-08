@@ -27,7 +27,7 @@ export default function Itinerary({ trip }: { trip: Trip }) {
     return stops.filter((stop) => stop.date === date);
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -43,8 +43,20 @@ export default function Itinerary({ trip }: { trip: Trip }) {
       // If dropped in a different day
       if (activeStop.date !== date) {
         const updatedStop = { ...activeStop, date: date };
-        const newStops = stops.map((stop) => (stop.id === active.id ? updatedStop : stop));
-        setStops(newStops);
+        try {
+          await fetch(`/api/trips/${trip.id}/stops`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedStop),
+            })
+          .then(response => { if (!response.ok) throw new Error('Network response was not ok'); });
+          const newStops = stops.map((stop) => (stop.id === active.id ? updatedStop : stop));
+          setStops(newStops);
+        } catch (error) {
+          console.error("Error updating stop:", error);
+        }
       } 
       else {
         // If reordering within the same day

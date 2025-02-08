@@ -73,10 +73,10 @@ export async function POST(req: Request, context: context) {
 }
 
 export async function PUT(req: Request, context: context) {
-  const { id, stopId } = await context.params;
+  const { id } = await context.params;
   const stopData = await req.json();
 
-  if (!id || !stopId) {
+  if (!id) {
     return new Response('Bad Request: Missing required IDs', { status: 400 });
   }
 
@@ -86,7 +86,7 @@ export async function PUT(req: Request, context: context) {
       return new Response('Not Found: Trip not found', { status: 404 });
     }
 
-    const stopIndex = trip.stops?.findIndex((stop) => stop.id === stopId);
+    const stopIndex = trip.stops?.findIndex((stop) => stop.id === stopData.id);
     if (stopIndex === -1 || stopIndex === undefined) {
       return new Response('Not Found: Stop not found', { status: 404 });
     }
