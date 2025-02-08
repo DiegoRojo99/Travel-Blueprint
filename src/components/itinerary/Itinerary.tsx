@@ -5,9 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { eachDayOfInterval } from "date-fns/fp";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import ItineraryDay from "./ItineraryDay";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { StopWithDetails } from "@/types/search";
 
-export default function Itinerary({ trip }: { trip: Trip }){
+export default function Itinerary({ trip }: { trip: Trip }) {
   const [days, setDays] = useState<string[]>([]);
+  const [stops, setStops] = useState<StopWithDetails[]>(trip.stops || []);
 
   useEffect(() => {
     if (trip.startDate && trip.endDate) {
@@ -19,26 +23,68 @@ export default function Itinerary({ trip }: { trip: Trip }){
     }
   }, [trip.startDate, trip.endDate]);
 
-
   const filterStopsByDate = (date: string) => {
-    return trip.stops?.filter((stop) => stop.date === date) ?? [];
+    return stops.filter((stop) => stop.date === date);
   };
 
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeStop = stops.find((stop) => stop.id === active.id);
+    const date = over.id;
+
+    if (activeStop) {
+      // If dropped in a different day
+      if (activeStop.date !== date) {
+        const updatedStop = { ...activeStop, date: date };
+        const newStops = stops.map((stop) => (stop.id === active.id ? updatedStop : stop));
+        setStops(newStops);
+      } 
+      else {
+        // If reordering within the same day
+        const dayStops = stops.filter((stop) => stop.date === date);
+        const oldIndex = dayStops.findIndex((stop) => stop.id === active.id);
+        const newIndex = dayStops.findIndex((stop) => stop.id === over.id);
+
+        if (oldIndex !== -1 && newIndex !== -1) {
+          const reorderedStops = arrayMove(dayStops, oldIndex, newIndex);
+          const newStops = stops.map((stop) =>
+            stop.date === date ? reorderedStops.shift()! : stop
+          );
+          setStops(newStops);
+        }
+      }
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   return (
-    <div className="itinerary mb-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Itinerary</h2>
-        <div className="flex items-center space-x-2">
-          
-          <FontAwesomeIcon icon={faCalendar} size="sm" className="text-gray-500" />
-          <span>{`${format(new Date(trip.startDate), 'MMM d')} - ${format(new Date(trip.endDate), 'MMM d')}`}</span>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <div className="itinerary mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Itinerary</h2>
+          <div className="flex items-center space-x-2">
+            <FontAwesomeIcon icon={faCalendar} size="sm" className="text-gray-500" />
+            <span>{`${format(new Date(trip.startDate), 'MMM d')} - ${format(new Date(trip.endDate), 'MMM d')}`}</span>
+          </div>
+        </div>
+        <div className="space-y-4 mb-6">
+          {days.map((date) => (
+            <ItineraryDay key={`itinerary-${date}`} date={date} stops={filterStopsByDate(date)} />
+          ))}
         </div>
       </div>
-      <div className="space-y-4 mb-6">
-        {days.map((date) => {
-          return <ItineraryDay key={`itinerary-${date}`} date={date} stops={filterStopsByDate(date)} />;
-        })}
-      </div>
-    </div>
+    </DndContext>
   );
-};
+}

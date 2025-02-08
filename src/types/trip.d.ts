@@ -10,13 +10,17 @@ interface Stop {
   notes: string;
 }
 
+interface TripPlace extends GoogleSearchResult { 
+  id: string;
+};
+
 interface TripDocument {
   name: string;
   startDate: string;
   endDate: string;
   destinations: City[];
   stops: StopWithDetails[] | undefined;
-  places: GoogleSearchResult[] | undefined;
+  places: TripPlace[] | undefined;
   users: TripUser[];
   userIds: string[];
 }
@@ -54,5 +58,6 @@ export {
   TripDocument,
   Trip,
   TripFormState,
-  TripUser
+  TripUser,
+  TripPlace
 };
