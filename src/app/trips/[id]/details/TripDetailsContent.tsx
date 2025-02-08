@@ -176,7 +176,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
         <PlaceSection
           trip={trip}
           onPlaceAdded={(selectedPlace: GoogleSearchResult) =>
-            setTrip({ ...trip, places: [...(trip.places || []), selectedPlace] })}
+            setTrip({ ...trip, places: [...(trip.places || []), { ...selectedPlace, id: selectedPlace.place_id || '' }] })}
           onStopAdded={(selectedStop: StopWithDetails) =>
             setTrip({ ...trip, stops: [...(trip.stops || []), selectedStop] })}
         />
