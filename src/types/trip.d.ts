@@ -40,7 +40,7 @@ interface Trip {
   endDate: string;
   destinations: City[];
   stops?: StopWithDetails[];
-  places?: GoogleSearchResult[];
+  places?: TripPlace[];
   users: TripUser[];
   userIds: string[];
 }
