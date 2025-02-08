@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { eachDayOfInterval } from "date-fns/fp";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import ItineraryDay from "./ItineraryDay";
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, closestCorners, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { StopWithDetails } from "@/types/search";
 
@@ -27,12 +27,12 @@ export default function Itinerary({ trip }: { trip: Trip }) {
     return stops.filter((stop) => stop.date === date);
   };
 
-  const handleDragEnd = async (event: any) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
 
     const activeStop = stops.find((stop) => stop.id === active.id);
-    let date = over.id;
+    let date = String(over.id);
     if (isNaN(Date.parse(date))) {
       const endStop = stops.find((stop) => stop.id === over.id);
       if(!endStop) return;
