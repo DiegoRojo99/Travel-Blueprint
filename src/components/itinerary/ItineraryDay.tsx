@@ -28,7 +28,6 @@ export default function ItineraryDay({ date, stops }: { date: string; stops: Sto
       ) : (
         <div className="my-2 flex flex-wrap -mx-2">
           {stops
-            .filter((stop) => stop.date === date)
             .map((stop, index) => (              
               <div key={`itinerary-${date}-stop-${index}`} className="w-full sm:w-1/2 px-2 mb-4">
                 <PlaceItem place={stop} />
