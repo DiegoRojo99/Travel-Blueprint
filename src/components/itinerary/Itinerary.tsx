@@ -40,6 +40,8 @@ export default function Itinerary({ trip }: { trip: Trip }) {
     }
 
     if (activeStop) {
+      const confirmation = confirm(`Move ${activeStop.name} to ${format(new Date(date), 'EEEE, dd MMMM')}`);
+      if (!confirmation) return;
       // If dropped in a different day
       if (activeStop.date !== date) {
         const updatedStop = { ...activeStop, date: date };
