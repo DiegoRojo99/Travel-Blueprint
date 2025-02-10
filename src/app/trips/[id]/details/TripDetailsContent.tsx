@@ -187,7 +187,7 @@ const TripDetailsContent = ({ params }: { params: Promise<{ id: string }> }) => 
             onStopAdded={handleAddStop}
           />
           <Itinerary trip={trip} />
-          <ItineraryMap trip={trip} onAddStop={handleAddStop} />
+          <ItineraryMap trip={trip} />
         </div>
       </div>
     )
